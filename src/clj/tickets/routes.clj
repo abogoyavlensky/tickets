@@ -34,7 +34,7 @@
   (routes
     (context "/api" []
       (api-routes endpoint))
-    (GET "/" _
+    (GET "/testapp" _
       (-> "public/index.html"
           io/resource
           io/input-stream
