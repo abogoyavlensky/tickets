@@ -23,9 +23,10 @@
 
 (defn api-routes
   [endpoint]
-  (routes
-    (GET "/tickets" [] (tickets-list (:db endpoint)))
-    (POST "/tickets" request (tickets-create (:db endpoint) request))))
+  (context "/tickets" []
+    (routes
+      (GET "/" [] (tickets-list (:db endpoint)))
+      (POST "/" request (tickets-create (:db endpoint) request)))))
 
 
 (defn home-routes
