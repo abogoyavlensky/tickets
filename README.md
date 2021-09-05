@@ -14,7 +14,7 @@ In the REPL, type
 ```
 
 The call to `(go)` starts the Figwheel server at port 3449, which takes care of
-live reloading ClojureScript code and CSS, and the app server at port 10555 
+live reloading ClojureScript code and CSS, and the app server at port 8080 
 which forwards requests to the http-handler you define.
 
 Running `(cljs-repl)` starts the Figwheel ClojureScript REPL. Evaluating
@@ -22,7 +22,7 @@ expressions here will only work once you've loaded the page, so the browser can
 connect to Figwheel.
 
 When you see the line `Successfully compiled "resources/public/app.js" in 21.36
-seconds.`, you're ready to go. Browse to `http://localhost:10555` and enjoy.
+seconds.`, you're ready to go. Browse to `http://localhost:8080` and enjoy.
 
 **Attention: It is not needed to run `lein figwheel` separately. Instead `(go)`
 launches Figwheel directly from the REPL**
@@ -56,7 +56,7 @@ REPL, you can evaluate code and preview pages inside Lighttable.
 Steps: After running `(go)`, open a browser tab in Lighttable. Open a cljs file
 from within a project, go to the end of an s-expression and hit Cmd-ENT.
 Lighttable will ask you which client to connect. Click 'Connect a client' and
-select 'Browser'. Browse to [http://localhost:10555](http://localhost:10555)
+select 'Browser'. Browse to [http://localhost:8080](http://localhost:8080)
 
 View LT's console to see a Chrome js console.
 
@@ -82,7 +82,7 @@ Put this in your Emacs configuration (`~/.emacs.d/init.el` or `~/.emacs`)
 ```
 
 Now `M-x cider-jack-in-clojurescript` (shortcut: `C-c M-J`, that's a capital
-"J", so `Meta-Shift-j`), point your browser at `http://localhost:10555`, and
+"J", so `Meta-Shift-j`), point your browser at `http://localhost:8080`, and
 you're good to go.
 
 ## Testing

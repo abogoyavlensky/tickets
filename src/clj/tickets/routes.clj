@@ -1,32 +1,31 @@
 (ns tickets.routes
   (:require [clojure.java.io :as io]
-            [cheshire.core :as json]
             [compojure.core :refer [ANY GET PUT POST DELETE routes context]]
             [compojure.route :as route]
             [ring.util.response :refer [response content-type]]
-            [tickets.components.db :as db-component]))
-
-(defn json-response
-  "Return data as ring response in json format."
-  [data]
-  (-> (response (json/generate-string data))
-      (content-type "application/json")))
+            [tickets.components.db :as db-component]
+            [tickets.util.ring :as ring-util]))
 
 
 (defn tickets-list
   [db]
   (let [tickets (db-component/get-ticket-list db)]
-    (json-response tickets)))
+    (ring-util/json-response tickets)))
 
 
 (defn tickets-create
-  [_])
+  [db request]
+  (let [ticket-data (:params request)]
+    ; TODO: add validation errors and catch it!
+    (db-component/create-ticket! db ticket-data)
+    (ring-util/json-response ticket-data)))
 
 
 (defn api-routes
   [endpoint]
   (routes
-    (GET "/tickets" [] (tickets-list (:db endpoint)))))
+    (GET "/tickets" [] (tickets-list (:db endpoint)))
+    (POST "/tickets" request (tickets-create (:db endpoint) request))))
 
 
 (defn home-routes

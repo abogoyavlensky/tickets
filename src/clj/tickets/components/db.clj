@@ -1,18 +1,45 @@
 (ns tickets.components.db
-  (:require [com.stuartsierra.component :as component])
+  (:require [com.stuartsierra.component :as component]
+            [clojure.spec.alpha :as s]
+            [slingshot.slingshot :refer [throw+]])
   (:import [java.util UUID]))
+
 
 (defn uuid
   []
   (str (UUID/randomUUID)))
 
+(s/def ::title string?)
+(s/def ::applicant string?)
+(s/def ::executor string?)
+; TODO: validate as date, and conform probably?!
+(s/def ::completed-at string?)
+
+(s/def ::ticket-new
+  (s/keys
+    :req-un [::title
+             ::applicant
+             ::executor
+             ::completed-at]))
+
+
+(defn check-data!
+  [spec data]
+  (when-not (s/valid? spec data)
+    (throw+ {:type :params/validation
+             :message (s/explain-str spec data)})))
+
 
 (defn create-ticket!
+  "Create new ticket with given data."
   [db ticket-data]
-  (swap! (:conn db) conj ticket-data))
+  (check-data! ::ticket-new ticket-data)
+  (let [ticket-data* (assoc ticket-data :id (uuid))]
+    (swap! (:conn db) update :tickets conj ticket-data*)))
 
 
 (defn get-ticket-list
+  "Return list of tickets from db."
   [db]
   (get @(:conn db) :tickets))
 
@@ -21,6 +48,7 @@
   component/Lifecycle
   (start [component]
     (println "Running db connection pool...")
+    ; TODO: add Datomic!
     (assoc component :conn (atom {:tickets [{:id (uuid)
                                              :title "First ticket"
                                              :applicant "User Sender"
