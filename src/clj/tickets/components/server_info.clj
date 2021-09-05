@@ -8,5 +8,7 @@
     component)
   (stop [component]
     component))
+
+
 (defn server-info [http-port]
   (->ServerInfoPrinter http-port))

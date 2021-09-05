@@ -7,17 +7,22 @@
             [system.components.middleware :refer [new-middleware]]
             [system.components.jetty :refer [new-web-server]]
             [tickets.config :refer [config]]
-            [tickets.routes :refer [home-routes]]))
+            [tickets.routes :refer [home-routes]]
+            [tickets.components.db :as db]))
+
 
 (defn app-system [config]
   (component/system-map
-   :routes     (new-endpoint home-routes)
-   :middleware (new-middleware {:middleware (:middleware config)})
-   :handler    (-> (new-handler)
-                   (component/using [:routes :middleware]))
-   :http       (-> (new-web-server (:http-port config))
-                   (component/using [:handler]))
-   :server-info (server-info (:http-port config))))
+    :db (db/db-component)
+    :routes     (-> (new-endpoint home-routes)
+                    (component/using [:db]))
+    :middleware (new-middleware {:middleware (:middleware config)})
+    :handler    (-> (new-handler)
+                    (component/using [:routes :middleware]))
+    :http       (-> (new-web-server (:http-port config))
+                    (component/using [:handler]))
+    :server-info (server-info (:http-port config))))
+
 
 (defn -main [& _]
   (let [config (config)]

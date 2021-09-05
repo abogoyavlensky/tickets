@@ -17,7 +17,12 @@
                  [org.danielsz/system "0.4.1"]
                  [org.clojure/tools.namespace "0.2.11"]
                  [compojure "1.6.1"]
-                 [re-frame "0.10.6"]]
+                 [cheshire "5.10.0"]
+                 [re-frame "0.10.6"]
+                 [bidi "2.1.5"]
+                 [kibu/pushy "0.3.8"]
+                 [day8.re-frame/http-fx "v0.2.0"]
+                 [cljs-ajax "0.7.3"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-environ "1.1.0"]]
@@ -30,7 +35,7 @@
 
   :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/js" "dev-target"]
 
-  :uberjar-name "tickets.jar"
+  :uberjar-name "testapp.jar"
 
   ;; Use `lein run` if you just want to start a HTTP server, without figwheel
   :main tickets.application
