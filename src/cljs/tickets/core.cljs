@@ -1,5 +1,5 @@
 (ns tickets.core
-  (:require [reagent.core :as reagent]
+  (:require [reagent.dom :as reagent]
             [re-frame.core :as re-frame]
             [tickets.events]
             [tickets.subs]

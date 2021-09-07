@@ -36,3 +36,7 @@
 (defn reset []
   (println "Running system...")
   (go))
+
+(comment
+  (reset)
+  (cljs-repl))

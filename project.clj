@@ -5,27 +5,27 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.10.3"]
-                 [org.clojure/clojurescript "1.10.439" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.879" :scope "provided"]
                  [org.clojure/spec.alpha "0.2.194"]
                  [com.cognitect/transit-clj "0.8.313"]
                  [ring "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.1"]
-                 [slingshot/slingshot "0.12.2"]
                  [bk/ring-gzip "0.3.0"]
                  [radicalzephyr/ring.middleware.logger "0.6.0"]
                  [clj-logging-config "1.9.12"]
-                 [environ "1.1.0"]
+                 [slingshot/slingshot "0.12.2"]
+                 [environ "1.2.0"]
                  [com.stuartsierra/component "0.3.2"]
-                 [org.danielsz/system "0.4.1"]
-                 [org.clojure/tools.namespace "0.2.11"]
-                 [compojure "1.6.1"]
+                 [org.danielsz/system "0.4.7"]
+                 [org.clojure/tools.namespace "1.1.0"]
+                 [compojure "1.6.2"]
                  [cheshire "5.10.0"]
-                 [re-frame "0.10.6"]
-                 [bidi "2.1.5"]
+                 [re-frame "1.2.0"]
+                 [bidi "2.1.6"]
                  [kibu/pushy "0.3.8"]
-                 [day8.re-frame/http-fx "v0.2.0"]
-                 [cljs-ajax "0.7.3"]]
+                 [day8.re-frame/http-fx "0.2.3"]
+                 [cljs-ajax "0.8.4"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-environ "1.1.0"]]
@@ -58,7 +58,9 @@
                            :asset-path "js/compiled/out"
                            :output-to "dev-target/public/js/compiled/tickets.js"
                            :output-dir "dev-target/public/js/compiled/out"
-                           :source-map-timestamp true}}
+                           :source-map-timestamp true
+                           :preloads [re-frisk.preload]
+                           :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}}
 
                {:id "test"
                 :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
@@ -112,7 +114,9 @@
                              [cider/piggieback "0.4.0"]
                              [cider/cider-nrepl "0.18.0"]
                              [lein-doo "0.1.11"]
-                             [reloaded.repl "0.2.4"]]
+                             [reloaded.repl "0.2.4"]
+                             [re-frisk "1.5.1"]
+                             [re-frisk-remote "1.5.1"]]
 
               :plugins [[lein-figwheel "0.5.18"]
                         [lein-doo "0.1.11"]]
