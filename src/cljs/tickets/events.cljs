@@ -12,13 +12,13 @@
 (re-frame/reg-event-db
   :set-page-create-ticket
   (fn  [db _]
-    (assoc db :page :create-ticket)))
+    (assoc db :current-page :create-ticket)))
 
 
 (re-frame/reg-event-db
   :set-page-home
   (fn  [db _]
-    (assoc db :page :home)))
+    (assoc db :current-page :home)))
 
 
 ; TODO: remove!

@@ -1,13 +1,20 @@
 (ns tickets.subs
   (:require [re-frame.core :as re-frame]))
 
-(re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
-
 
 (re-frame/reg-sub
-  :page
+  :current-page
   (fn [db]
-    (:page db)))
+    (:current-page db)))
+
+
+(re-frame/reg-sub
+  :page-title
+
+  (fn [_]
+    [(re-frame/subscribe [:current-page])])
+
+  (fn [[current-page] _]
+    (case current-page
+      :home "Tickets"
+      :create-ticket "Create new ticket")))
