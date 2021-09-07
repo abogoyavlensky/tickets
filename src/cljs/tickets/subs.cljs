@@ -18,3 +18,9 @@
     (case current-page
       :home "Ticket list"
       :create-ticket "Create new ticket")))
+
+
+(re-frame/reg-sub
+  :tickets
+  (fn [db]
+    (:tickets db)))

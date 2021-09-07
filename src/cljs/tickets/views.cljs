@@ -6,13 +6,19 @@
   []
   [:h1 "Tickets"])
 
+
 (defn home-page
   []
-  (let [page-title (re-frame/subscribe [:page-title])]
+  (let [page-title (re-frame/subscribe [:page-title])
+        tickets (re-frame/subscribe [:tickets])]
     [:div [:h2 @page-title]
      [:a
       {:href (router/path-for :create-ticket)}
-      "Create ticket"]]))
+      "Create ticket"]
+     ; TODO: render list of tickets!
+     ;(map (fn [t] [:p (:title t)]) tickets)]))
+     [:p (-> @tickets first :title)]]))
+
 
 (defn create-ticket-page
   []

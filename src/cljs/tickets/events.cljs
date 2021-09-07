@@ -1,6 +1,10 @@
 (ns tickets.events
   (:require [re-frame.core :as re-frame]
-            [tickets.db :as db]))
+            [ajax.core :as ajax]
+            ; import http-fx to register events
+            [day8.re-frame.http-fx]
+            [tickets.db :as db]
+            [tickets.router :as router]))
 
 
 (re-frame/reg-event-db
@@ -9,10 +13,40 @@
    db/default-db))
 
 
+(re-frame/reg-event-fx
+  :get-tickets
+  (fn [{:keys [db]} _]
+    {:db db
+     :http-xhrio {:method          :get
+                  :uri             (router/path-for-api :api-tickets-list)
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:get-tickets-success]
+                  :on-failure      [:get-tickets-error]}}))
+
+
 (re-frame/reg-event-db
+  :get-tickets-success
+  (fn [db [_ tickets]]
+    (-> db
+        (assoc :tickets tickets))))
+
+
+(re-frame/reg-event-db
+  :get-tickets-error
+  (fn [db [_ tickets]]
+    (-> db
+        (assoc :tickets "ERROR!"))))
+
+
+(re-frame/reg-event-fx
   :set-current-page
-  (fn  [db [_ page]]
-    (assoc db :current-page page)))
+  (fn  [{:keys [db]} [_ page]]
+    (let [state {:db (assoc db :current-page page)}]
+      (case page
+        :home (assoc state :dispatch [:get-tickets])
+        state))))
+
 
 
 ; TODO: remove!
