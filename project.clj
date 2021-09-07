@@ -36,7 +36,7 @@
 
   :test-paths ["test/clj" "test/cljc"]
 
-  :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/js" "dev-target"]
+  :clean-targets ^{:protect false} [:target-path :compile-path "resources/public/assets/js" "dev-target"]
 
   :uberjar-name "testapp.jar"
 
@@ -55,16 +55,16 @@
                 :figwheel {:on-jsload "tickets.system/reset"}
 
                 :compiler {:main cljs.user
-                           :asset-path "js/compiled/out"
-                           :output-to "dev-target/public/js/compiled/tickets.js"
-                           :output-dir "dev-target/public/js/compiled/out"
+                           :asset-path "/assets/js/compiled/out"
+                           :output-to "dev-target/public/assets/js/compiled/tickets.js"
+                           :output-dir "dev-target/public/assets/js/compiled/out"
                            :source-map-timestamp true
                            :preloads [re-frisk.preload]
                            :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}}
 
                {:id "test"
                 :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
-                :compiler {:output-to "dev-target/public/js/compiled/testable.js"
+                :compiler {:output-to "dev-target/public/assets/js/compiled/testable.js"
                            :main tickets.test-runner
                            :optimizations :none}}
 
@@ -87,7 +87,7 @@
   :figwheel {;; :http-server-root "public"       ;; serve static assets from resources/public/
              ;; :server-port 3449                ;; default
              ;; :server-ip "127.0.0.1"           ;; default
-             :css-dirs ["resources/public/css"]  ;; watch and update CSS
+             :css-dirs ["resources/public/assets/css"]  ;; watch and update CSS
 
              ;; Start an nREPL server into the running figwheel process. We
              ;; don't do this, instead we do the opposite, running figwheel from

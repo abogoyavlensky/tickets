@@ -16,5 +16,5 @@
 
   (fn [[current-page] _]
     (case current-page
-      :home "Tickets"
+      :home "Ticket list"
       :create-ticket "Create new ticket")))

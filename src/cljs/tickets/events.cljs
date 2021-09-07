@@ -10,19 +10,13 @@
 
 
 (re-frame/reg-event-db
-  :set-page-create-ticket
-  (fn  [db _]
-    (assoc db :current-page :create-ticket)))
-
-
-(re-frame/reg-event-db
-  :set-page-home
-  (fn  [db _]
-    (assoc db :current-page :home)))
+  :set-current-page
+  (fn  [db [_ page]]
+    (assoc db :current-page page)))
 
 
 ; TODO: remove!
 (comment
   (require '[re-frame.db :as rf-db])
-  (swap! rf-db/app-db assoc :name "Interactivity FTW")
+  (swap! rf-db/app-db assoc :name "Some name")
   (deref rf-db/app-db))

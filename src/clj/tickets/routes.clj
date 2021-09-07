@@ -1,6 +1,6 @@
 (ns tickets.routes
   (:require [clojure.java.io :as io]
-            [compojure.core :refer [ANY GET PUT POST DELETE routes context]]
+            [compojure.core :refer [GET POST routes context]]
             [compojure.route :as route]
             [ring.util.response :refer [response content-type]]
             [tickets.components.db :as db-component]
@@ -34,11 +34,11 @@
   (routes
     (context "/api" []
       (api-routes endpoint))
-    (GET "/testapp" _
+    (route/resources "/assets")
+    (GET "/*" _
       (-> "public/index.html"
           io/resource
           io/input-stream
           response
           (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))
-    (route/resources "/")
     (route/not-found "Page not found.")))
