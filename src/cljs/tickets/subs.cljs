@@ -5,3 +5,9 @@
  :name
  (fn [db]
    (:name db)))
+
+
+(re-frame/reg-sub
+  :page
+  (fn [db]
+    (:page db)))

@@ -109,8 +109,8 @@
   :doo {:build "test"}
 
   :profiles {:dev
-             {:dependencies [[figwheel "0.5.18"]
-                             [figwheel-sidecar "0.5.18"]
+             {:dependencies [[figwheel "0.5.20"]
+                             [figwheel-sidecar "0.5.20"]
                              [cider/piggieback "0.4.0"]
                              [cider/cider-nrepl "0.18.0"]
                              [lein-doo "0.1.11"]
