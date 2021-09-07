@@ -40,5 +40,5 @@
           io/resource
           io/input-stream
           response
-          (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))
+          (content-type "text/html; charset=utf-8")))
     (route/not-found "Page not found.")))
