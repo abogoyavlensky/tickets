@@ -7,7 +7,7 @@
             [system.components.middleware :refer [new-middleware]]
             [system.components.jetty :refer [new-web-server]]
             [tickets.config :refer [config]]
-            [tickets.routes :refer [home-routes]]
+            [tickets.router :refer [home-routes]]
             [tickets.components.db :as db]))
 
 

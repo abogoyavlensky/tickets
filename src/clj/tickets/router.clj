@@ -1,4 +1,4 @@
-(ns tickets.routes
+(ns tickets.router
   (:require [clojure.java.io :as io]
             [compojure.core :refer [GET POST routes context]]
             [compojure.route :as route]
