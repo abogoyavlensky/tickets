@@ -55,13 +55,14 @@
 
 (re-frame/reg-event-fx
   :event/create-ticket
-  (fn [{:keys [db]} _]
+  (fn [{:keys [db]} [_ params]]
     {:db (-> db
              (assoc :ticket-form-submitting? true)
              (assoc :ticket-form-errors nil))
      :http-xhrio {:method :post
                   :uri (router/path-for-api :api-tickets-list)
                   :format (ajax/json-request-format)
+                  :params params
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:event/create-ticket-success]
                   :on-failure [:event/create-ticket-error]}}))
@@ -79,7 +80,6 @@
   :event/create-ticket-error
   (fn [db [_ response]]
     ; TODO: add errors to form!
-    (prn [:DATA response])
     (-> db
         (assoc :ticket-form-submitting? false))))
 

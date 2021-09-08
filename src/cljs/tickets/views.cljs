@@ -110,7 +110,7 @@
        [:button
         {:type :button
          :disabled (true? @ticket-form-submitting?)
-         :on-click #(re-frame/dispatch [:event/create-ticket])}
+         :on-click #(re-frame/dispatch [:event/create-ticket @params])}
         "Save"]])))
 
 
