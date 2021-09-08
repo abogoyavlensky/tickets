@@ -16,7 +16,9 @@
 (re-frame/reg-event-fx
   :get-tickets
   (fn [{:keys [db]} _]
-    {:db db
+    {:db (-> db
+             (assoc :tickets-loading? true)
+             (assoc :tickets-error nil))
      :http-xhrio {:method          :get
                   :uri             (router/path-for-api :api-tickets-list)
                   :format          (ajax/json-request-format)
@@ -29,14 +31,17 @@
   :get-tickets-success
   (fn [db [_ tickets]]
     (-> db
-        (assoc :tickets tickets))))
+        (assoc :tickets tickets)
+        (assoc :tickets-loading? false))))
 
 
 (re-frame/reg-event-db
   :get-tickets-error
-  (fn [db [_ tickets]]
+  (fn [db [_ _]]
     (-> db
-        (assoc :tickets "ERROR!"))))
+        (assoc :tickets-error (str "Error happened while fetching tickets. "
+                                   "Please try to reload the page."))
+        (assoc :tickets-loading? false))))
 
 
 (re-frame/reg-event-fx

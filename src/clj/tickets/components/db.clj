@@ -10,6 +10,7 @@
   (str (UUID/randomUUID)))
 
 (s/def ::title string?)
+(s/def ::description string?)
 (s/def ::applicant string?)
 (s/def ::executor string?)
 ; TODO: validate as date, and conform probably?!
@@ -18,6 +19,7 @@
 (s/def ::ticket-new
   (s/keys
     :req-un [::title
+             ::description
              ::applicant
              ::executor
              ::completed-at]))
@@ -51,11 +53,19 @@
     ; TODO: add Datomic!
     (assoc component :conn (atom {:tickets [{:id (uuid)
                                              :title "First ticket"
+                                             :description (str "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                                                               "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                               " Ut enim ad minim veniam, quis nostrud exercitation"
+                                                               " ullamco laboris nisi ut aliquip ex ea commodo consequat.")
                                              :applicant "User Sender"
                                              :executor "Employer Executor"
                                              :completed-at "20210-08-09"}
                                             {:id (uuid)
                                              :title "Second ticket"
+                                             :description (str "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                                                               "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                                                               " Ut enim ad minim veniam, quis nostrud exercitation"
+                                                               " ullamco laboris nisi ut aliquip ex ea commodo consequat.")
                                              :applicant "User Sender 2"
                                              :executor "Employer Executor 2"
                                              :completed-at "20210-08-22"}]})))

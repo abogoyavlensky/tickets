@@ -24,3 +24,15 @@
   :tickets
   (fn [db]
     (:tickets db)))
+
+
+(re-frame/reg-sub
+  :tickets-error
+  (fn [db]
+    (:tickets-error db)))
+
+
+(re-frame/reg-sub
+  :tickets-loading?
+  (fn [db]
+    (:tickets-loading? db)))

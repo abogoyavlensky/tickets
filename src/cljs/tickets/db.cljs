@@ -2,4 +2,6 @@
 
 (def default-db
   {:current-page nil
-   :tickets []})
+   :tickets []
+   :tickets-error nil
+   :tickets-loading? false})
