@@ -53,28 +53,28 @@
            (render-tickets-table @tickets)))]]))
 
 (defn- input-field
-  [{:keys [params field-name label field-type submitting?]}]
-  (let [field-name-str (name field-name)]
+  [{:keys [params field label field-type submitting?]}]
+  (let [field-name-str (name field)]
     [:div
      [:label {:for field-name-str} label]
      [:input
       {:id field-name-str
        :name field-name-str
        :type field-type
-       :value (:title @params)
-       :on-change #(swap! params assoc :title (-> % .-target .-value))
+       :value (get @params field)
+       :on-change #(swap! params assoc field (-> % .-target .-value))
        :disabled (true? submitting?)}]]))
 
 (defn- textarea-field
-  [{:keys [params field-name label submitting?]}]
-  (let [field-name-str (name field-name)]
+  [{:keys [params field label submitting?]}]
+  (let [field-name-str (name field)]
     [:div
      [:label {:for field-name-str} label]
      [:textarea
       {:id field-name-str
        :name field-name-str
-       :value (:title @params)
-       :on-change #(swap! params assoc :title (-> % .-target .-value))
+       :value (get @params field)
+       :on-change #(swap! params assoc field (-> % .-target .-value))
        :disabled (true? submitting?)}]]))
 
 (defn- ticket-form
@@ -84,26 +84,26 @@
     (fn []
       [:form
        [input-field {:params params
-                     :field-name :title
+                     :field :title
                      :label "Title"
                      :field-type "text"
                      :submitting? @ticket-form-submitting?}]
        [textarea-field {:params params
-                        :field-name :description
+                        :field :description
                         :label "Description"
                         :submitting? @ticket-form-submitting?}]
        [input-field {:params params
-                     :field-name :applicant
+                     :field :applicant
                      :label "Applicant"
                      :field-type "text"
                      :submitting? @ticket-form-submitting?}]
        [input-field {:params params
-                     :field-name :executor
+                     :field :executor
                      :label "Executor"
                      :field-type "text"
                      :submitting? @ticket-form-submitting?}]
        [input-field {:params params
-                     :field-name :completed-at
+                     :field :completed-at
                      :label "Completion date"
                      :field-type "date"
                      :submitting? @ticket-form-submitting?}]

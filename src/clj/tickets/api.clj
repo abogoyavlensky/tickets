@@ -14,5 +14,6 @@
   [db request]
   (let [ticket-data (:params request)]
     ; TODO: add validation errors and catch it!
+    (prn [:DATA ticket-data])
     (db-component/create-ticket! db ticket-data)
     (ring-util/json-response ticket-data)))
