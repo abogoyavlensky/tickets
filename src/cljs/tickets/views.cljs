@@ -1,5 +1,6 @@
 (ns tickets.views
   (:require [re-frame.core :as re-frame]
+            [reagent.core :as reagent]
             [tickets.router :as router]))
 
 (defn- header
@@ -51,6 +52,67 @@
            [:p @error]
            (render-tickets-table @tickets)))]]))
 
+(defn- input-field
+  [{:keys [params field-name label field-type submitting?]}]
+  (let [field-name-str (name field-name)]
+    [:div
+     [:label {:for field-name-str} label]
+     [:input
+      {:id field-name-str
+       :name field-name-str
+       :type field-type
+       :value (:title @params)
+       :on-change #(swap! params assoc :title (-> % .-target .-value))
+       :disabled (true? submitting?)}]]))
+
+(defn- textarea-field
+  [{:keys [params field-name label submitting?]}]
+  (let [field-name-str (name field-name)]
+    [:div
+     [:label {:for field-name-str} label]
+     [:textarea
+      {:id field-name-str
+       :name field-name-str
+       :value (:title @params)
+       :on-change #(swap! params assoc :title (-> % .-target .-value))
+       :disabled (true? submitting?)}]]))
+
+(defn- ticket-form
+  []
+  (let [ticket-form-submitting? (re-frame/subscribe [:ticket-form-submitting?])
+        params (reagent/atom {:title ""})]
+    (fn []
+      [:form
+       [input-field {:params params
+                     :field-name :title
+                     :label "Title"
+                     :field-type "text"
+                     :submitting? @ticket-form-submitting?}]
+       [textarea-field {:params params
+                        :field-name :description
+                        :label "Description"
+                        :submitting? @ticket-form-submitting?}]
+       [input-field {:params params
+                     :field-name :applicant
+                     :label "Applicant"
+                     :field-type "text"
+                     :submitting? @ticket-form-submitting?}]
+       [input-field {:params params
+                     :field-name :executor
+                     :label "Executor"
+                     :field-type "text"
+                     :submitting? @ticket-form-submitting?}]
+       [input-field {:params params
+                     :field-name :completed-at
+                     :label "Completion date"
+                     :field-type "date"
+                     :submitting? @ticket-form-submitting?}]
+       [:button
+        {:type :button
+         :disabled (true? @ticket-form-submitting?)
+         :on-click #(re-frame/dispatch [:event/create-ticket])}
+        "Save"]])))
+
 
 (defn- create-ticket-page
   []
@@ -58,7 +120,8 @@
     [:div [:h2 @page-title]
      [:a
       {:href (router/path-for :home)}
-      "Back to list"]]))
+      "Back to list"]
+     [ticket-form]]))
 
 
 (defn- page-not-found

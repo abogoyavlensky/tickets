@@ -23,7 +23,7 @@
         (-> (select-keys e [:message])
             (assoc :status :error
                    :error-code (error-type->error-code e))
-            (ring-util/json-response))))))
+            (ring-util/json-bad-request))))))
 
 
 (defn config []

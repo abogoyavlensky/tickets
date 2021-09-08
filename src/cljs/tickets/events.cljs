@@ -19,12 +19,12 @@
     {:db (-> db
              (assoc :tickets-loading? true)
              (assoc :tickets-error nil))
-     :http-xhrio {:method          :get
-                  :uri             (router/path-for-api :api-tickets-list)
-                  :format          (ajax/json-request-format)
+     :http-xhrio {:method :get
+                  :uri (router/path-for-api :api-tickets-list)
+                  :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success      [:get-tickets-success]
-                  :on-failure      [:get-tickets-error]}}))
+                  :on-success [:get-tickets-success]
+                  :on-failure [:get-tickets-error]}}))
 
 
 (re-frame/reg-event-db
@@ -52,6 +52,36 @@
         :home (assoc state :dispatch [:get-tickets])
         state))))
 
+
+(re-frame/reg-event-fx
+  :event/create-ticket
+  (fn [{:keys [db]} _]
+    {:db (-> db
+             (assoc :ticket-form-submitting? true)
+             (assoc :ticket-form-errors nil))
+     :http-xhrio {:method :post
+                  :uri (router/path-for-api :api-tickets-list)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:event/create-ticket-success]
+                  :on-failure [:event/create-ticket-error]}}))
+
+
+(re-frame/reg-event-db
+  :event/create-ticket-success
+  (fn [db [_ _]]
+    ; TODO: redirect to ticket list page!
+    (-> db
+        (assoc :ticket-form-submitting? false))))
+
+
+(re-frame/reg-event-db
+  :event/create-ticket-error
+  (fn [db [_ response]]
+    ; TODO: add errors to form!
+    (prn [:DATA response])
+    (-> db
+        (assoc :ticket-form-submitting? false))))
 
 
 ; TODO: remove!

@@ -4,4 +4,6 @@
   {:current-page nil
    :tickets []
    :tickets-error nil
-   :tickets-loading? false})
+   :tickets-loading? false
+   :ticket-form-submitting? false
+   :ticket-form-errors nil})

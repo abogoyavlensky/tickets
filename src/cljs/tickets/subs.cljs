@@ -36,3 +36,9 @@
   :tickets-loading?
   (fn [db]
     (:tickets-loading? db)))
+
+
+(re-frame/reg-sub
+  :ticket-form-submitting?
+  (fn [db]
+    (:ticket-form-submitting? db)))
