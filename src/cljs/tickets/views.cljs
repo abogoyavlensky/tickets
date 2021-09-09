@@ -9,30 +9,37 @@
 
 
 (defn- render-ticket-item
-  [ticket]
-  [:tr
-   {:key (:id ticket)}
-   [:td (:title ticket)]
-   [:td (:description ticket)]
-   [:td (:applicant ticket)]
-   [:td (:executor ticket)]
-   [:td (:completed-at ticket)]])
+  [active-ticket-id ticket]
+  (let [tr-class (cond-> []
+                   (and
+                     (some? active-ticket-id)
+                     (= active-ticket-id (:id ticket))) (conj "active"))]
+    [:tr
+     {:key (:id ticket)
+      :class tr-class}
+     [:td (:title ticket)]
+     [:td (:description ticket)]
+     [:td (:applicant ticket)]
+     [:td (:executor ticket)]
+     [:td (:completed-at ticket)]]))
 
 
 (defn- render-tickets-table
   [tickets]
-  (if (seq tickets)
-    [:table
-     [:thead
-      [:tr
-       [:th "Title"]
-       [:th "Description"]
-       [:th "Applicant"]
-       [:th "Executor"]
-       [:th "Completion date"]]]
-     [:tbody
-      (map render-ticket-item tickets)]]
-    [:p "There are no tickets yet. Please create a new ticket."]))
+  (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
+    (if (seq tickets)
+      [:table
+       {:class ["table"]}
+       [:thead
+        [:tr
+         [:th "Title"]
+         [:th "Description"]
+         [:th "Applicant"]
+         [:th "Executor"]
+         [:th "Completion date"]]]
+       [:tbody
+        (map (partial render-ticket-item @ticket-new-id) tickets)]]
+      [:p "There are no tickets yet. Please create a new ticket."])))
 
 
 (defn- home-page
@@ -136,5 +143,6 @@
                   :create-ticket create-ticket-page
                   page-not-found)]
     [:div
+     {:class ["container" "grid-lg"]}
      [header]
      [content]]))

@@ -13,6 +13,12 @@
    db/default-db))
 
 
+(re-frame/reg-fx
+  :set-url
+  (fn [{:keys [url]}]
+    (router/set-token! url)))
+
+
 (re-frame/reg-event-fx
   :get-tickets
   (fn [{:keys [db]} _]
@@ -68,12 +74,13 @@
                   :on-failure [:event/create-ticket-error]}}))
 
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
   :event/create-ticket-success
-  (fn [db [_ _]]
-    ; TODO: redirect to ticket list page!
-    (-> db
-        (assoc :ticket-form-submitting? false))))
+  (fn [{:keys [db]} [_ response]]
+    {:db (-> db
+             (assoc :ticket-form-submitting? false)
+             (assoc :ticket-new-id (:id response)))
+     :set-url {:url (router/path-for :home)}}))
 
 
 (re-frame/reg-event-db

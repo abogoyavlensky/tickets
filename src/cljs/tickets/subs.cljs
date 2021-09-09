@@ -42,3 +42,9 @@
   :ticket-form-submitting?
   (fn [db]
     (:ticket-form-submitting? db)))
+
+
+(re-frame/reg-sub
+  :ticket-new-id
+  (fn [db]
+    (:ticket-new-id db)))

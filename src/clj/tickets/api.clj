@@ -12,7 +12,7 @@
 
 (defn tickets-create
   [db request]
-  (let [ticket-data (:params request)]
-    ; TODO: add validation errors and catch it!
-    (db-component/create-ticket! db ticket-data)
-    (ring-util/json-response ticket-data)))
+  (let [ticket-data (:params request)
+        ; TODO: add validation errors and catch it!
+        created-ticket (db-component/create-ticket! db ticket-data)]
+    (ring-util/json-response created-ticket)))

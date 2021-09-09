@@ -30,3 +30,8 @@
 (defn path-for-api
   [route]
   (bidi/path-for api-routes route))
+
+
+(defn set-token!
+  [token]
+  (pushy/set-token! history token))

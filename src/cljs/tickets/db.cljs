@@ -6,4 +6,5 @@
    :tickets-error nil
    :tickets-loading? false
    :ticket-form-submitting? false
-   :ticket-form-errors nil})
+   :ticket-form-errors nil
+   :ticket-new-id nil})
