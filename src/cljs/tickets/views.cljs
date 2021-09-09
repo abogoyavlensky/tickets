@@ -48,10 +48,17 @@
         tickets (re-frame/subscribe [:tickets])
         error (re-frame/subscribe [:tickets-error])
         loading? (re-frame/subscribe [:tickets-loading?])]
-    [:div [:h2 @page-title]
-     [:a
-      {:href (router/path-for :create-ticket)}
-      "Create ticket"]
+    [:div
+     {:class ["container"]}
+     [:div
+      {:class ["columns"]}
+      [:h2
+       {:class ["col-2" "col-mr-auto"]}
+       @page-title]
+      [:a
+       {:href (router/path-for :create-ticket)
+        :class ["btn" "btn-primary" "col-2"]}
+       "Create ticket"]]
      [:div
       (if (true? @loading?)
          [:p "Loading..."]
@@ -63,33 +70,42 @@
   [{:keys [params field label field-type submitting?]}]
   (let [field-name-str (name field)]
     [:div
-     [:label {:for field-name-str} label]
+     [:label
+      {:for field-name-str
+       :class ["form-label"]}
+      label]
      [:input
       {:id field-name-str
        :name field-name-str
        :type field-type
        :value (get @params field)
        :on-change #(swap! params assoc field (-> % .-target .-value))
-       :disabled (true? submitting?)}]]))
+       :disabled (true? submitting?)
+       :class ["form-input"]}]]))
 
 (defn- textarea-field
   [{:keys [params field label submitting?]}]
   (let [field-name-str (name field)]
     [:div
-     [:label {:for field-name-str} label]
+     [:label
+      {:for field-name-str
+       :class ["form-label"]}
+      label]
      [:textarea
       {:id field-name-str
        :name field-name-str
        :value (get @params field)
        :on-change #(swap! params assoc field (-> % .-target .-value))
-       :disabled (true? submitting?)}]]))
+       :disabled (true? submitting?)
+       :class ["form-input"]}]]))
 
 (defn- ticket-form
   []
   (let [ticket-form-submitting? (re-frame/subscribe [:ticket-form-submitting?])
         params (reagent/atom {:title ""})]
     (fn []
-      [:form
+      [:div
+       {:class ["form-group" "column" "col-8"]}
        [input-field {:params params
                      :field :title
                      :label "Title"
@@ -117,7 +133,8 @@
        [:button
         {:type :button
          :disabled (true? @ticket-form-submitting?)
-         :on-click #(re-frame/dispatch [:event/create-ticket @params])}
+         :on-click #(re-frame/dispatch [:event/create-ticket @params])
+         :class ["btn" "btn-primary" "btn-lg" "mt-2" "float-right"]}
         "Save"]])))
 
 
@@ -127,8 +144,10 @@
     [:div [:h2 @page-title]
      [:a
       {:href (router/path-for :home)}
-      "Back to list"]
-     [ticket-form]]))
+      "<- Back to list"]
+     [:div
+      {:class ["columns"]}
+      [ticket-form]]]))
 
 
 (defn- page-not-found
