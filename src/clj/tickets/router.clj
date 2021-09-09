@@ -3,15 +3,15 @@
             [compojure.core :refer [GET POST routes context]]
             [compojure.route :as route]
             [ring.util.response :refer [response content-type]]
-            [tickets.api :as api]))
+            [tickets.handlers :as handlers]))
 
 
 (defn api-routes
   [endpoint]
   (context "/tickets" []
     (routes
-      (GET "/" [] (api/tickets-list (:db endpoint)))
-      (POST "/" request (api/tickets-create (:db endpoint) request)))))
+      (GET "/" [] (handlers/tickets-list (:db endpoint)))
+      (POST "/" request (handlers/tickets-create (:db endpoint) request)))))
 
 
 (defn home-routes

@@ -91,7 +91,7 @@
         (assoc :ticket-form-submitting? false))))
 
 
-; TODO: remove!
+; Inspect app-db state
 (comment
   (require '[re-frame.db :as rf-db])
   (swap! rf-db/app-db assoc :name "Some name")
