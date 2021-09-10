@@ -57,7 +57,7 @@
       (fn? error-message) (error-message problem)
       (map? error-message) error-message
       :else {:field :form
-             :message "Invalid data in form."})))
+             :message "Form is invalid."})))
 
 
 (defn explain-data->error-messages

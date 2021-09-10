@@ -49,6 +49,7 @@
   (fn [db]
     (:ticket-new-id db)))
 
+
 (re-frame/reg-sub
   :ticket-form-errors
   (fn [db]

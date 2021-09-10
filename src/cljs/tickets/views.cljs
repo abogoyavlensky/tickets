@@ -120,6 +120,14 @@
        :class ["form-input"]}]
      (map error-hint errors)]))
 
+
+(defn- form-error
+  [error]
+  [:div
+   {:class ["toast" "toast-error" "col-12"]}
+   error])
+
+
 (defn- ticket-form
   []
   (let [ticket-form-submitting? (re-frame/subscribe [:ticket-form-submitting?])
@@ -128,6 +136,8 @@
     (fn []
       [:div
        {:class ["column" "col-8"]}
+       (when (seq (:form @errors))
+         (map form-error (:form @errors)))
        [input-field {:params params
                      :field :title
                      :label "Title"
