@@ -206,7 +206,11 @@
 (defn- page-not-found
   []
   [:div
-   [:h2 "Page not found."]])
+   [:h2 "Page not found."]
+   [:a
+    {:href (router/path-for :home)
+     :class ["btn"]}
+    "-> Home page"]])
 
 (defn main-panel []
   (let [current-page (re-frame/subscribe [:current-page])
