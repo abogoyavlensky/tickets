@@ -24,6 +24,21 @@
      [:td (:completed-at ticket)]]))
 
 
+(defn- create-ticket-btn
+  []
+  [:a
+   {:href (router/path-for :create-ticket)
+    :class ["btn" "btn-primary" "col-2"]}
+   "Create ticket"])
+
+
+(defn- empty-tickets
+  []
+  [:div.empty
+   [:p.empty-title.h5 "There are no tickets yet."]
+   [:p.empty-subtitle "Please create a new ticket."]])
+
+
 (defn- render-tickets-table
   [tickets]
   (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
@@ -39,7 +54,7 @@
          [:th "Completion date"]]]
        [:tbody
         (map (partial render-ticket-item @ticket-new-id) tickets)]]
-      [:p "There are no tickets yet. Please create a new ticket."])))
+      [empty-tickets])))
 
 
 (defn- home-page
@@ -55,10 +70,7 @@
       [:h2
        {:class ["col-2" "col-mr-auto"]}
        @page-title]
-      [:a
-       {:href (router/path-for :create-ticket)
-        :class ["btn" "btn-primary" "col-2"]}
-       "Create ticket"]]
+      [create-ticket-btn]]
      [:div
       (if (true? @loading?)
          [:p "Loading..."]
