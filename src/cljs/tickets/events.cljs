@@ -53,7 +53,9 @@
 (re-frame/reg-event-fx
   :set-current-page
   (fn  [{:keys [db]} [_ page]]
-    (let [state {:db (assoc db :current-page page)}]
+    (let [state {:db (-> db
+                       (assoc :current-page page)
+                       (assoc :ticket-form-errors nil))}]
       (case page
         :home (assoc state :dispatch [:get-tickets])
         state))))
@@ -87,7 +89,6 @@
 (re-frame/reg-event-db
   :event/create-ticket-error
   (fn [db [_ {{:keys [errors]} :response}]]
-    (prn [:RESP errors])
     (-> db
         (assoc :ticket-form-submitting? false)
         (assoc :ticket-form-errors errors))))

@@ -22,8 +22,10 @@
 
 (defn- field-error
   [field message-tmpl]
-  {:field field
-   :message (format message-tmpl (field field-names))})
+  {:field (if (some? field) field :form)
+   :message (if (some? field)
+              (format message-tmpl (field field-names))
+              message-tmpl)})
 
 
 ; TODO: maybe update with multimethods!
@@ -40,7 +42,11 @@
    :tickets.handlers/title (field-error :title "%s value should be string.")
    :tickets.handlers/description (field-error :description "%s value should be string.")
    :tickets.handlers/applicant (field-error :applicant "%s value should be string.")
-   :tickets.handlers/executor (field-error :executor "%s value should be string.")})
+   :tickets.handlers/executor (field-error :executor "%s value should be string.")
+   :tickets.handlers/not-empty-string
+   (fn [problem]
+     (let [field (peek (:in problem))]
+       (field-error field "%s value is empty string.")))})
 
 
 (defn- problem->error-message

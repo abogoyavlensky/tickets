@@ -66,10 +66,22 @@
            [:p @error]
            (render-tickets-table @tickets)))]]))
 
+(defn- error-hint
+  [message]
+  [:p
+   {:class ["form-input-hint"]
+    :key message}
+   message])
+
 (defn- input-field
-  [{:keys [params field label field-type submitting?]}]
-  (let [field-name-str (name field)]
+  [{:keys [params field label field-type submitting? errors]}]
+  (let [field-name-str (name field)
+        form-classes ["form-group"]
+        form-classes* (if (seq errors)
+                        (conj form-classes "has-error")
+                        form-classes)]
     [:div
+     {:class form-classes*}
      [:label
       {:for field-name-str
        :class ["form-label"]}
@@ -81,12 +93,20 @@
        :value (get @params field)
        :on-change #(swap! params assoc field (-> % .-target .-value))
        :disabled (true? submitting?)
-       :class ["form-input"]}]]))
+       :class ["form-input"]}]
+     (map error-hint errors)]))
+
+
 
 (defn- textarea-field
-  [{:keys [params field label submitting?]}]
-  (let [field-name-str (name field)]
+  [{:keys [params field label submitting? errors]}]
+  (let [field-name-str (name field)
+        form-classes ["form-group"]
+        form-classes* (if (seq errors)
+                        (conj form-classes "has-error")
+                        form-classes)]
     [:div
+     {:class form-classes*}
      [:label
       {:for field-name-str
        :class ["form-label"]}
@@ -97,45 +117,56 @@
        :value (get @params field)
        :on-change #(swap! params assoc field (-> % .-target .-value))
        :disabled (true? submitting?)
-       :class ["form-input"]}]]))
+       :class ["form-input"]}]
+     (map error-hint errors)]))
 
 (defn- ticket-form
   []
   (let [ticket-form-submitting? (re-frame/subscribe [:ticket-form-submitting?])
-        params (reagent/atom {:title ""})]
+        params (reagent/atom {})
+        errors (re-frame/subscribe [:ticket-form-errors])]
     (fn []
       [:div
-       {:class ["form-group" "column" "col-8"]}
+       {:class ["column" "col-8"]}
        [input-field {:params params
                      :field :title
                      :label "Title"
                      :field-type "text"
-                     :submitting? @ticket-form-submitting?}]
+                     :submitting? @ticket-form-submitting?
+                     :errors (:title @errors)}]
        [textarea-field {:params params
                         :field :description
                         :label "Description"
-                        :submitting? @ticket-form-submitting?}]
+                        :submitting? @ticket-form-submitting?
+                        :errors (:description @errors)}]
        [input-field {:params params
                      :field :applicant
                      :label "Applicant"
                      :field-type "text"
-                     :submitting? @ticket-form-submitting?}]
+                     :submitting? @ticket-form-submitting?
+                     :errors (:applicant @errors)}]
        [input-field {:params params
                      :field :executor
                      :label "Executor"
                      :field-type "text"
-                     :submitting? @ticket-form-submitting?}]
+                     :submitting? @ticket-form-submitting?
+                     :errors (:executor @errors)}]
        [input-field {:params params
                      :field :completed-at
                      :label "Completion date"
                      :field-type "date"
-                     :submitting? @ticket-form-submitting?}]
+                     :submitting? @ticket-form-submitting?
+                     :errors (:completed-at @errors)}]
        [:button
         {:type :button
          :disabled (true? @ticket-form-submitting?)
          :on-click #(re-frame/dispatch [:event/create-ticket @params])
          :class ["btn" "btn-primary" "btn-lg" "mt-2" "float-right"]}
-        "Save"]])))
+        "Save"]
+       [:a
+        {:href (router/path-for :home)
+         :class ["btn" "btn-lg" "mt-2" "float-right" "mr-2"]}
+        "Cancel"]])))
 
 
 (defn- create-ticket-page

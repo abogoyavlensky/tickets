@@ -1,5 +1,6 @@
 (ns tickets.handlers
   (:require [clojure.spec.alpha :as s]
+            [clojure.string :as str]
             [slingshot.slingshot :refer [throw+]]
             [tickets.components.db :as db-component]
             [tickets.errors :as errors]
@@ -26,14 +27,17 @@
       false)))
 
 
-(s/def ::title string?)
-(s/def ::description string?)
-(s/def ::applicant string?)
-(s/def ::executor string?)
-(s/def ::completed-at
-  (s/and
-    string?
-    valid-date?))
+(s/def ::not-empty-string
+  (fn [val]
+    (and
+      (string? val)
+      (boolean (seq (str/trim val))))))
+
+(s/def ::title ::not-empty-string)
+(s/def ::description ::not-empty-string)
+(s/def ::applicant ::not-empty-string)
+(s/def ::executor ::not-empty-string)
+(s/def ::completed-at (s/and string? valid-date?))
 
 
 (s/def ::ticket-new
@@ -45,7 +49,7 @@
              ::completed-at]))
 
 
-(defn- check-ticket-data!
+(defn- conform-ticket-data!
   [spec data]
   (when-not (s/valid? spec data)
     (throw+ {:type :params/validation
@@ -55,7 +59,7 @@
 (defn tickets-create
   [db request]
   (let [ticket-data (:params request)
-        _ (check-ticket-data! ::ticket-new ticket-data)
+        _ (conform-ticket-data! ::ticket-new ticket-data)
         created-ticket (db-component/create-ticket! db ticket-data)]
     (ring-util/json-response created-ticket)))
 
