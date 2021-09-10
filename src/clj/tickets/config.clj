@@ -6,7 +6,8 @@
             [ring.middleware.logger :refer [wrap-with-logger]]
             [ring.middleware.json :refer [wrap-json-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [tickets.util.ring :as ring-util]))
+            [tickets.util.ring :as ring-util]
+            [tickets.errors :as errors]))
 
 
 (defn- error-type->error-code
@@ -20,9 +21,9 @@
     (try+
       (handler request)
       (catch #(contains? #{:params/validation} (:type %)) e
-        (-> (select-keys e [:message])
-            (assoc :status :error
-                   :error-code (error-type->error-code e))
+        (-> {:status :error
+             :error-code (error-type->error-code e)
+             :errors (errors/explain-data->error-messages (:explain-data e))}
             (ring-util/json-bad-request))))))
 
 

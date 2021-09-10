@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [slingshot.slingshot :refer [throw+]]
             [tickets.components.db :as db-component]
+            [tickets.errors :as errors]
             [tickets.util.ring :as ring-util])
   (:import [java.time.format DateTimeFormatter DateTimeParseException]
            [java.time LocalDate]))
@@ -48,7 +49,7 @@
   [spec data]
   (when-not (s/valid? spec data)
     (throw+ {:type :params/validation
-             :message (s/explain-str spec data)})))
+             :explain-data (s/explain-data spec data)})))
 
 
 (defn tickets-create
@@ -61,10 +62,11 @@
 
 ; TODO: remove!
 (comment
+  ;(clojure.core/fn [%] (clojure.core/contains? % :title))
   (let [params {:applicant "hjkfhjk",
-                :completed-at "2021-09-21",
-                :description "sdf",
+                :completed-at "2021-09-",
+                ;:description "sdf",
                 :executor "fhjfdsd gyudh",
-                :title "sdf"}
-        date "2021-09-21"]
-    (s/valid? ::completed-at date)))
+                :title 11}
+        explain-data (s/explain-data ::ticket-new params)]
+    (errors/explain-data->error-messages explain-data)))

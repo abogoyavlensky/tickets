@@ -79,16 +79,18 @@
   (fn [{:keys [db]} [_ response]]
     {:db (-> db
              (assoc :ticket-form-submitting? false)
+             (assoc :ticket-form-errors nil)
              (assoc :ticket-new-id (:id response)))
      :set-url {:url (router/path-for :home)}}))
 
 
 (re-frame/reg-event-db
   :event/create-ticket-error
-  (fn [db [_ response]]
-    ; TODO: add errors to form!
+  (fn [db [_ {{:keys [errors]} :response}]]
+    (prn [:RESP errors])
     (-> db
-        (assoc :ticket-form-submitting? false))))
+        (assoc :ticket-form-submitting? false)
+        (assoc :ticket-form-errors errors))))
 
 
 ; Inspect app-db state
