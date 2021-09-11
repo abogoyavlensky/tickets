@@ -30,7 +30,7 @@
 
 ; TODO: maybe update with multimethods!
 (def ^:private error-messages
-  {:tickets.handlers/ticket-new
+  {:tickets.handlers/ticket-in
    (fn [problem]
      (let [parsed (s/conform ::parse-contains-pred (:pred problem))]
        (if-not (= ::s/invalid parsed)
@@ -38,11 +38,11 @@
                field-name (get field-names field)]
            {:field field
             :message (str field-name " is required.")}))))
-   :tickets.handlers/completed-at (field-error :completed-at "%s value has invalid format.")
-   :tickets.handlers/title (field-error :title "%s value should be string.")
-   :tickets.handlers/description (field-error :description "%s value should be string.")
-   :tickets.handlers/applicant (field-error :applicant "%s value should be string.")
-   :tickets.handlers/executor (field-error :executor "%s value should be string.")
+   :ticket/completed-at (field-error :completed-at "%s value has invalid format.")
+   :ticket/title (field-error :title "%s value should be string.")
+   :ticket/description (field-error :description "%s value should be string.")
+   :ticket/applicant (field-error :applicant "%s value should be string.")
+   :ticket/executor (field-error :executor "%s value should be string.")
    :tickets.handlers/not-empty-string
    (fn [problem]
      (let [field (peek (:in problem))]

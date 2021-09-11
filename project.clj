@@ -25,7 +25,8 @@
                  [bidi "2.1.6"]
                  [kibu/pushy "0.3.8"]
                  [day8.re-frame/http-fx "0.2.3"]
-                 [cljs-ajax "0.8.4"]]
+                 [cljs-ajax "0.8.4"]
+                 [com.datomic/dev-local "0.9.235"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-environ "1.1.0"]]
