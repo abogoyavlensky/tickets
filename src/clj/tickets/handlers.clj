@@ -9,12 +9,6 @@
            [java.time LocalDate]))
 
 
-(defn tickets-list
-  [db]
-  (let [tickets (db-component/get-ticket-list db)]
-    (ring-util/json-response tickets)))
-
-
 (def ^:private date-format
   (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
 
@@ -82,9 +76,17 @@
   [db request]
   (let [ticket-data (:params request)
         ticket-conformed (conform-ticket-data! ::ticket-in ticket-data)
-        created-ticket (db-component/create-ticket! db #p ticket-conformed)]
+        created-ticket (db-component/create-ticket! db ticket-conformed)]
     (->> created-ticket
          (s/unform ::ticket-out)
+         (ring-util/json-response))))
+
+
+(defn tickets-list
+  [db]
+  (let [tickets (db-component/get-ticket-list db)]
+    (->> tickets
+         (map #(s/unform ::ticket-out %))
          (ring-util/json-response))))
 
 

@@ -111,8 +111,7 @@
                        [?e :ticket/applicant ?applicant]
                        [?e :ticket/executor ?executor]
                        [?e :ticket/completed-at ?completed-at]]]
-    (->> (d/q query (d/db (:conn db)))
-         (map #(update % :completed-at date->string)))))
+    (d/q query (d/db (:conn db)))))
 
 
 ; TODO: remove!
