@@ -5,7 +5,7 @@
             [system.components.endpoint :refer [new-endpoint]]
             [system.components.handler :refer [new-handler]]
             [system.components.middleware :refer [new-middleware]]
-            [system.components.jetty :refer [new-web-server]]
+            [system.components.jetty :as jetty]
             [tickets.config :refer [config]]
             [tickets.router :refer [home-routes]]
             [tickets.components.db :as db]))
@@ -13,13 +13,13 @@
 
 (defn app-system [config]
   (component/system-map
-    :db (db/db-component)
+    :db (db/db-component (:db config))
     :routes     (-> (new-endpoint home-routes)
                     (component/using [:db]))
     :middleware (new-middleware {:middleware (:middleware config)})
     :handler    (-> (new-handler)
                     (component/using [:routes :middleware]))
-    :http       (-> (new-web-server (:http-port config))
+    :http       (-> (jetty/new-jetty :port (:http-port config))
                     (component/using [:handler]))
     :server-info (server-info (:http-port config))))
 

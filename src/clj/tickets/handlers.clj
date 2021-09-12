@@ -3,8 +3,8 @@
             [clojure.string :as str]
             [clojure.instant :as instant]
             [slingshot.slingshot :refer [throw+]]
-            [tickets.components.db :as db-component]
-            [tickets.util.ring :as ring-util])
+            [tickets.util.ring :as ring-util]
+            [tickets.queries :as queries])
   (:import [java.time.format DateTimeFormatter DateTimeParseException]
            [java.time LocalDate]))
 
@@ -76,7 +76,7 @@
   [db request]
   (let [ticket-data (:params request)
         ticket-conformed (conform-ticket-data! ::ticket-in ticket-data)
-        created-ticket (db-component/create-ticket! db ticket-conformed)]
+        created-ticket (queries/create-ticket! db ticket-conformed)]
     (->> created-ticket
          (s/unform ::ticket-out)
          (ring-util/json-response))))
@@ -84,22 +84,7 @@
 
 (defn tickets-list
   [db]
-  (let [tickets (db-component/get-ticket-list db)]
+  (let [tickets (queries/get-ticket-list db)]
     (->> tickets
          (map #(s/unform ::ticket-out %))
          (ring-util/json-response))))
-
-
-; TODO: remove!
-(comment
-  ;(clojure.core/fn [%] (clojure.core/contains? % :title))
-  (let [params {:applicant "hjkfhjk",
-                :completed-at #inst "2021-09-22",
-                :description "sdf",
-                :executor "fhjfdsd gyudh",
-                :title "some name"}
-                ;:id 1111}
-        explain-data (s/explain-data ::ticket-new params)]))
-    ;(errors/explain-data->error-messages explain-data)))
-    ;(s/conform ::ticket-in params)
-    ;(s/unform ::ticket-in params)))
