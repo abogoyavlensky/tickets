@@ -24,6 +24,11 @@
         (-> {:status :error
              :error-code (error-type->error-code e)
              :errors (errors/explain-data->error-messages (:explain-data e))}
+            (ring-util/json-bad-request)))
+      (catch [:type :db/error] e
+        (-> {:status :error
+             :error-code (error-type->error-code e)
+             :errors [(:message e)]}
             (ring-util/json-bad-request))))))
 
 

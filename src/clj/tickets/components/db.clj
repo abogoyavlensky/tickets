@@ -2,13 +2,15 @@
   (:require [com.stuartsierra.component :as component]
             [clojure.instant :as instant]
             [clojure.core.async :as async]
-            [datomic.client.api :as d]
-            [datomic.client.api.async :as d-async]
-            [datomic.dev-local :as dev-local])
+            [datomic.client.api.async :as d]
+            [datomic.dev-local :as dev-local]
+            [cognitect.anomalies :as anomalies]
+            [slingshot.slingshot :refer [throw+]])
   (:import [java.util UUID]))
 
 
 (def ^:private DB-NAME "tickets")
+(def ^:private QUERY-TIMEOUT 5000)  ; 5 second
 
 
 (def ^:private db-config
@@ -47,18 +49,18 @@
     (let [client (d/client {:server-type :dev-local
                             :system "dev"
                             :storage-dir :mem})
-          _ (d/create-database client {:db-name "tickets"})
-          conn (d/connect client {:db-name DB-NAME})]
+          _ (async/<!! (d/create-database client {:db-name "tickets"}))
+          conn (async/<!! (d/connect client {:db-name DB-NAME}))]
       (d/transact conn {:tx-data db-schema})
       (-> component
           (assoc :client client)
           (assoc :conn conn))))
   (stop [component]
     (let [{:keys [client conn]} component]
-      (if (and (every? some? [client conn]))
+      (when (every? some? [client conn])
         (dev-local/release-db {:system (:system db-config)
-                               :db-name DB-NAME}))
-      (d/delete-database client {:db-name DB-NAME})
+                               :db-name DB-NAME})
+        (d/delete-database client {:db-name DB-NAME}))
       (dissoc component :client :conn))))
 
 
@@ -90,6 +92,21 @@
 (defn db-component []
   (->DB))
 
+(defn- async-db-query!
+  "Perform async db query and return result or throw exception otherwise."
+  [query-async-fn]
+  (let [result-ch (query-async-fn)
+        [result channel] (async/alts!! [result-ch (async/timeout QUERY-TIMEOUT)])]
+    (when-not (= result-ch channel)
+      (throw+ {:type :db/error
+               :error-code :query-timeout
+               :message "Database query exceeded timeout."}))
+    (if (:error result)
+      (throw+ {:type :db/error
+               :error-code (::anomalies/category result)
+               :error result
+               :message (::anomalies/message result)})
+      result)))
 
 (defn create-ticket!
   "Create new ticket with given data."
@@ -97,7 +114,7 @@
   (let [temp-id (uuid)
         ticket-qualified (-> (map->qualified-map :ticket ticket-data)
                              (assoc :db/id temp-id))
-        tx (d/transact (:conn db) {:tx-data [ticket-qualified]})
+        tx (async-db-query! #(d/transact (:conn db) {:tx-data [ticket-qualified]}))
         actual-id (get-in tx [:tempids temp-id])]
     (assoc ticket-data :id actual-id)))
 
@@ -112,7 +129,8 @@
                        [?e :ticket/applicant ?applicant]
                        [?e :ticket/executor ?executor]
                        [?e :ticket/completed-at ?completed-at]]]
-    (d/q query (d/db (:conn db)))))
+    (async-db-query! #(d/q {:query query :args [(d/db (:conn db))]}))))
+
 
 
 ; TODO: remove!
@@ -132,7 +150,7 @@
         conn (get-in system [:db :conn])
         query '[:find ?e ?title ?description ?applicant ?executor ?completed-at
                 :keys id title description applicant executor completed-at
-                :timeout 1
+                :timeout 100
                 :where [?e :ticket/title ?title]
                        [?e :ticket/description ?description]
                        [?e :ticket/applicant ?applicant]
@@ -147,20 +165,24 @@
                      :executor "Employer Executor"
                      :completed-at (instant/read-instant-date "2021-09-08")}]
     ;(create-ticket! db ticket-data)))
+    (get-ticket-list db)))
+
+
     ;(def RES (create-ticket! db ticket-data))))
-    ;(d/transact conn {:tx-data data})
+    ;(d/transact conn {:tx-data data
+    ;                  :timeout 0.1})
     ;(async/<!! (d-async/transact conn {:tx-data [(map->qualified-map :ticket ticket-data)]
-    ;                                   :timeout 0}))))
+    ;                                   :timeou 0}))))
 
     ;(d/q query (d/db conn))))
-    (async/<!! (d-async/q {:query query :args [(d/db conn)]}))))
+    ;(async/<!! (d-async/q {:query query :args [(d/db conn)]}))))
     ;(d-async/q {:query query :args [(d/db conn)]})))
 
     ;(async/<!! (async/go
     ;             (let [res-ch (d-async/q {:query query :args [(d/db conn)]})]
     ;               (async/<! res-ch))))))
 
-    ;(let [res-ch (d-async/q {:query query :args [(d/db conn)]})
+    ;(let [res-ch (d/q {:query query :args [(d/db conn)]})
     ;      [items channel] (async/alts!! [res-ch (async/timeout 0)])]
     ;  ;(prn items)
     ;  ;(prn channel)
@@ -173,7 +195,7 @@
     ;(.format (SimpleDateFormat. "MM/dd/yyyy") date)))
     ;(.format date "MM/dd/yyyy")))
     ;(format "%1$tY-%1$tm-%1$td" date)))
-    ;(->> (get-ticket-list db)
+    ;(->> (get-ticket-list db))))
     ;     first
     ;     (reduce-kv
     ;       (fn [m k v] (assoc m (namespaced-kw :ticket k) v))
