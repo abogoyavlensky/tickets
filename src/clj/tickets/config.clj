@@ -34,6 +34,8 @@
 
 (defn config []
   {:http-port  (Integer. (or (env :port) 8080))
+   :db {:db-system "dev"
+        :db-name "tickets"}
    :middleware [[wrap-defaults api-defaults]
                 wrap-keyword-params
                 wrap-json-params
