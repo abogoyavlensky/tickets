@@ -1,7 +1,9 @@
 (ns tickets.components.db
   (:require [com.stuartsierra.component :as component]
             [clojure.instant :as instant]
+            [clojure.core.async :as async]
             [datomic.client.api :as d]
+            [datomic.client.api.async :as d-async]
             [datomic.dev-local :as dev-local])
   (:import [java.util UUID]))
 
@@ -42,7 +44,6 @@
   component/Lifecycle
   (start [component]
     (println "Running db connection...")
-    ; TODO: add Datomic!
     (let [client (d/client {:server-type :dev-local
                             :system "dev"
                             :storage-dir :mem})
@@ -131,6 +132,7 @@
         conn (get-in system [:db :conn])
         query '[:find ?e ?title ?description ?applicant ?executor ?completed-at
                 :keys id title description applicant executor completed-at
+                :timeout 1
                 :where [?e :ticket/title ?title]
                        [?e :ticket/description ?description]
                        [?e :ticket/applicant ?applicant]
@@ -146,8 +148,27 @@
                      :completed-at (instant/read-instant-date "2021-09-08")}]
     ;(create-ticket! db ticket-data)))
     ;(def RES (create-ticket! db ticket-data))))
-    ;(d/transact conn {:tx-data data})))
-    (d/q query (d/db conn))))
+    ;(d/transact conn {:tx-data data})
+    ;(async/<!! (d-async/transact conn {:tx-data [(map->qualified-map :ticket ticket-data)]
+    ;                                   :timeout 0}))))
+
+    ;(d/q query (d/db conn))))
+    (async/<!! (d-async/q {:query query :args [(d/db conn)]}))))
+    ;(d-async/q {:query query :args [(d/db conn)]})))
+
+    ;(async/<!! (async/go
+    ;             (let [res-ch (d-async/q {:query query :args [(d/db conn)]})]
+    ;               (async/<! res-ch))))))
+
+    ;(let [res-ch (d-async/q {:query query :args [(d/db conn)]})
+    ;      [items channel] (async/alts!! [res-ch (async/timeout 0)])]
+    ;  ;(prn items)
+    ;  ;(prn channel)
+    ;  (if (= res-ch channel)
+    ;    items
+    ;    (prn "Timed out!")))))
+
+
     ;    date (-> (d/q query (d/db conn)) second :completed-at)]))
     ;(.format (SimpleDateFormat. "MM/dd/yyyy") date)))
     ;(.format date "MM/dd/yyyy")))
