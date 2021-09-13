@@ -36,7 +36,8 @@
          (let [field (get-in parsed [:check :field])
                field-name (get field-names field)]
            {:field field
-            :message (str field-name " is required.")}))))
+            :message (str field-name " is required.")})
+         (field-error :form "Form data is invalid."))))
    :ticket/completed-at (field-error :completed-at "%s value has invalid format.")
    :ticket/title (field-error :title "%s value should be string.")
    :ticket/description (field-error :description "%s value should be string.")
@@ -56,7 +57,7 @@
       (fn? error-message) (error-message problem)
       (map? error-message) error-message
       :else {:field :form
-             :message "Form is invalid."})))
+             :message "Form data is invalid."})))
 
 
 (defn explain-data->error-messages

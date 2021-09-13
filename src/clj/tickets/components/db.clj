@@ -2,8 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [clojure.core.async :as async]
             [datomic.client.api.async :as d]
-            [datomic.dev-local :as dev-local]
-            [slingshot.slingshot :refer [throw+]]))
+            [datomic.dev-local :as dev-local]))
 
 
 (def ^:private db-config

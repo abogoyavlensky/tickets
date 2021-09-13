@@ -1,0 +1,9 @@
+{:linters {:single-key-in {:level :warning}
+           :shadowed-var {:level :warning}
+           :refer-all {:exclude [clojure.test
+                                 slingshot.slingshot]}
+           :unresolved-symbol {:exclude [(slingshot.slingshot/try+ [e])
+                                         (etaoin.api/with-chrome-headless [driver])]}
+           :consistent-alias {:aliases {clojure.spec.alpha s
+                                        datomic.client.api.async d}}}}
+

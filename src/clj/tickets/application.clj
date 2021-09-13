@@ -6,7 +6,7 @@
             [system.components.handler :refer [new-handler]]
             [system.components.middleware :refer [new-middleware]]
             [system.components.jetty :as jetty]
-            [tickets.config :refer [config]]
+            [tickets.config :as tickets-config]
             [tickets.router :refer [home-routes]]
             [tickets.components.db :as db]))
 
@@ -25,7 +25,7 @@
 
 
 (defn -main [& _]
-  (let [config (config)]
+  (let [config (tickets-config/config)]
     (-> config
         app-system
         component/start)))

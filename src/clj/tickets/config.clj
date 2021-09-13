@@ -1,6 +1,5 @@
 (ns tickets.config
   (:require [environ.core :refer [env]]
-            [slingshot.slingshot :refer [try+]]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.gzip :as gzip]
             [ring.middleware.logger :as logger]

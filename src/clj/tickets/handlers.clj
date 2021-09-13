@@ -27,10 +27,10 @@
 
 
 (s/def ::not-empty-string
-  (fn [val]
+  (fn [value]
     (and
-      (string? val)
-      (boolean (seq (str/trim val))))))
+      (string? value)
+      (boolean (seq (str/trim value))))))
 
 
 (s/def :ticket/id integer?)

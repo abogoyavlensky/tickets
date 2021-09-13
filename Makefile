@@ -6,6 +6,7 @@ INFO := @sh -c '\
     echo "=> $$1"; \
     printf $(NC)' VALUE
 
+DIRS?=src test
 
 # Ignore output of make `echo` command
 .SILENT:
@@ -33,3 +34,15 @@ run:
 test:
 	@$(INFO) "Running tests..."
 	@lein eftest-cov
+
+
+.PHONY: lint  # Linting code
+lint:
+	@$(INFO) "Linting project..."
+	@clj-kondo --config .clj-kondo/config-ci.edn --parallel --lint $(DIRS)
+
+
+.PHONY: lint-init  # Linting code with libraries
+lint-init:
+	@$(INFO) "Linting project's classpath..."
+	@clj-kondo --config .clj-kondo/config-ci.edn --parallel --dependencies --lint $(shell lein classpath)

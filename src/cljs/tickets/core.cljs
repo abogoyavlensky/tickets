@@ -5,15 +5,18 @@
             [tickets.events]
             [tickets.subs]
             [tickets.views :as views]
-            [tickets.config :as config]
             [tickets.router :as router]))
 
 
 (enable-console-print!)
 
 
+(def debug?
+  ^boolean goog.DEBUG)
+
+
 (defn dev-setup []
-  (when config/debug?
+  (when debug?
     (enable-console-print!)
     (println "dev mode")))
 
