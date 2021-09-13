@@ -38,3 +38,5 @@ make run  # run uberjar
 [] Run tests in CI.
 [] Validate form on the client side before sending to server. 
 [] Validate length of text fields in form.
+[] Add notification about newly created ticket.
+[] Add logs with logback.

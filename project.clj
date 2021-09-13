@@ -12,8 +12,6 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.1"]
                  [bk/ring-gzip "0.3.0"]
-                 [radicalzephyr/ring.middleware.logger "0.6.0"]
-                 [clj-logging-config "1.9.12"]
                  [slingshot/slingshot "0.12.2"]
                  [environ "1.2.0"]
                  [com.stuartsierra/component "0.3.2"]
