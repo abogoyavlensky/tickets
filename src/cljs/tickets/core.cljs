@@ -32,6 +32,6 @@
 (defn render
   []
   (pushy/start! router/history)
-  (re-frame/dispatch-sync [:initialize-db])
+  (re-frame/dispatch-sync [:event/initialize-db])
   (dev-setup)
   (mount-root))

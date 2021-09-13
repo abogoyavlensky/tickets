@@ -8,19 +8,19 @@
 
 
 (re-frame/reg-event-db
-  :initialize-db
+  :event/initialize-db
   (fn [_ _]
     db/default-db))
 
 
 (re-frame/reg-fx
-  :set-url
+  :fx/set-url
   (fn [{:keys [url]}]
     (router/set-token! url)))
 
 
 (re-frame/reg-event-fx
-  :get-tickets
+  :event/get-tickets
   (fn [{:keys [db]} _]
     {:db (-> db
              (assoc :tickets-loading? true)
@@ -29,12 +29,12 @@
                   :uri (router/path-for-api :api-tickets-list)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:get-tickets-success]
-                  :on-failure [:get-tickets-error]}}))
+                  :on-success [:event/get-tickets-success]
+                  :on-failure [:event/get-tickets-error]}}))
 
 
 (re-frame/reg-event-db
-  :get-tickets-success
+  :event/get-tickets-success
   (fn [db [_ tickets]]
     (-> db
         (assoc :tickets tickets)
@@ -42,7 +42,7 @@
 
 
 (re-frame/reg-event-db
-  :get-tickets-error
+  :event/get-tickets-error
   (fn [db [_ _]]
     (-> db
         (assoc :tickets-error (str "Error happened while fetching tickets. "
@@ -51,13 +51,13 @@
 
 
 (re-frame/reg-event-fx
-  :set-current-page
+  :event/set-current-page
   (fn [{:keys [db]} [_ page]]
     (let [state {:db (-> db
                          (assoc :current-page page)
                          (assoc :ticket-form-errors nil))}]
       (case page
-        :home (assoc state :dispatch [:get-tickets])
+        :home (assoc state :dispatch [:event/get-tickets])
         state))))
 
 
@@ -83,7 +83,7 @@
              (assoc :ticket-form-submitting? false)
              (assoc :ticket-form-errors nil)
              (assoc :ticket-new-id (:id response)))
-     :set-url {:url (router/path-for :home)}}))
+     :fx/set-url {:url (router/path-for :home)}}))
 
 
 (re-frame/reg-event-db

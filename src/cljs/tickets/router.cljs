@@ -18,7 +18,7 @@
 
 (def history
   (pushy/pushy
-    #(re-frame/dispatch [:set-current-page (:handler %)])
+    #(re-frame/dispatch [:event/set-current-page (:handler %)])
     #(bidi/match-route routes %)))
 
 
