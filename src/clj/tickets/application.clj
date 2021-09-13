@@ -10,7 +10,8 @@
             [tickets.components.db :as db]))
 
 
-(defn app-system [config]
+(defn app-system
+  [config]
   (component/system-map
     :db (db/db-component (:db config))
     :routes     (-> (new-endpoint home-routes)
@@ -22,7 +23,8 @@
                     (component/using [:handler]))))
 
 
-(defn -main [& _]
+(defn -main
+  [& _]
   (let [config (tickets-config/config)]
     (-> config
         app-system
