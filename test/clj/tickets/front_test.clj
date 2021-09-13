@@ -10,7 +10,7 @@
 
 (deftest test-front-create-ticket-and-get-list-ok
   (testing "check creating ticket and showing it on the list page"
-    (etaoin/with-chrome {} driver
+    (etaoin/with-chrome-headless {} driver
       (etaoin/go driver utils/TEST-URL-FRONT-TICKETS)
       (etaoin/wait-visible driver {:fn/has-text "There are no tickets yet."})
       (etaoin/click driver {:tag :a
@@ -43,7 +43,7 @@
 
 (deftest test-front-try-create-ticket-and-get-validation-error
   (testing "check trying to create ticket and showing validation error"
-    (etaoin/with-chrome {} driver
+    (etaoin/with-chrome-headless {} driver
       (etaoin/go driver utils/TEST-URL-FRONT-TICKETS)
       (etaoin/wait-visible driver {:fn/has-text "There are no tickets yet."})
       (etaoin/click driver {:tag :a
@@ -73,7 +73,7 @@
 
 (deftest test-front-page-not-found-ok
   (testing "check response is empty if there is no tickets"
-    (etaoin/with-chrome {} driver
+    (etaoin/with-chrome-headless {} driver
       (etaoin/go driver (str utils/TEST-URL-BASE "/wrong"))
       (etaoin/wait-visible driver {:fn/has-text "Tickets"})
       (is (etaoin/visible? driver {:tag :h2

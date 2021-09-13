@@ -110,28 +110,35 @@
 
   :doo {:build "test"}
 
-  :profiles {:dev
-             {:dependencies [[figwheel "0.5.20"]
-                             [figwheel-sidecar "0.5.20"]
-                             [cider/piggieback "0.4.0"]
-                             [cider/cider-nrepl "0.18.0"]
-                             [lein-doo "0.1.11"]
-                             [reloaded.repl "0.2.4"]
-                             [re-frisk "1.5.1"]
-                             [re-frisk-remote "1.5.1"]
-                             [clj-http "3.12.3"]
-                             [etaoin "0.4.6"]]
+  :profiles {:dev {:dependencies [[figwheel "0.5.20"]
+                                  [figwheel-sidecar "0.5.20"]
+                                  [cider/piggieback "0.4.0"]
+                                  [cider/cider-nrepl "0.18.0"]
+                                  [lein-doo "0.1.11"]
+                                  [reloaded.repl "0.2.4"]
+                                  [re-frisk "1.5.1"]
+                                  [re-frisk-remote "1.5.1"]
+                                  [clj-http "3.12.3"]
+                                  [etaoin "0.4.6"]]
 
-              :plugins [[lein-figwheel "0.5.18"]
-                        [lein-doo "0.1.11"]]
+                   :plugins [[lein-figwheel "0.5.18"]
+                             [lein-doo "0.1.11"]]
 
-              :source-paths ["dev"]
-              :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
+                   :source-paths ["dev"]
+                   :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
 
-             :uberjar
-             {:source-paths ^:replace ["src/clj" "src/cljc"]
-              :prep-tasks ["compile"
-                           ["cljsbuild" "once" "min"]]
-              :hooks []
-              :omit-source true
-              :aot :all}})
+             :uberjar {:source-paths ^:replace ["src/clj" "src/cljc"]
+                       :prep-tasks ["compile"
+                                    ["cljsbuild" "once" "min"]]
+                       :hooks []
+                       :omit-source true
+                       :aot :all}
+
+             :coverage {:dependencies [[eftest "0.5.9"]
+                                       [cloverage "1.2.2"]]
+                        :plugins [[lein-cloverage "1.2.2"]]
+                        :cloverage {:runner :eftest
+                                    :runner-opts {:multithread? false}
+                                    :ns-exclude-regex [#"user"]}}}
+
+  :aliases {"eftest-cov" ["with-profiles" "+dev,+coverage" "cloverage"]})

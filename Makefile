@@ -27,3 +27,9 @@ build:
 run:
 	@$(INFO) "Running uberjar..."
 	@java -jar target/testapp.jar
+
+
+.PHONY: test  # Run tests
+test:
+	@$(INFO) "Running tests..."
+	@lein eftest-cov
