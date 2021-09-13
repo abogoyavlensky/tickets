@@ -119,7 +119,8 @@
                              [reloaded.repl "0.2.4"]
                              [re-frisk "1.5.1"]
                              [re-frisk-remote "1.5.1"]
-                             [clj-http "3.12.3"]]
+                             [clj-http "3.12.3"]
+                             [etaoin "0.4.6"]]
 
               :plugins [[lein-figwheel "0.5.18"]
                         [lein-doo "0.1.11"]]

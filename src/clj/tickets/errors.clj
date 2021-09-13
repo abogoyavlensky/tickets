@@ -28,7 +28,6 @@
               message-tmpl)})
 
 
-; TODO: maybe update with multimethods!
 (def ^:private error-messages
   {:tickets.handlers/ticket-in
    (fn [problem]
