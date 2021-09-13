@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [tickets.router :as router]))
 
+
 (defn- header
   []
   [:h1 "Tickets"])
@@ -73,10 +74,11 @@
       [create-ticket-btn]]
      [:div
       (if (true? @loading?)
-         [:p "Loading..."]
-         (if (some? @error)
-           [:p @error]
-           (render-tickets-table @tickets)))]]))
+        [:p "Loading..."]
+        (if (some? @error)
+          [:p @error]
+          (render-tickets-table @tickets)))]]))
+
 
 (defn- error-hint
   [message]
@@ -84,6 +86,7 @@
    {:class ["form-input-hint"]
     :key message}
    message])
+
 
 (defn- input-field
   [{:keys [params field label field-type submitting? errors]}]
@@ -107,7 +110,6 @@
        :disabled (true? submitting?)
        :class ["form-input"]}]
      (map error-hint errors)]))
-
 
 
 (defn- textarea-field
@@ -212,7 +214,9 @@
      :class ["btn"]}
     "-> Home page"]])
 
-(defn main-panel []
+
+(defn main-panel
+  []
   (let [current-page (re-frame/subscribe [:current-page])
         content (case @current-page
                   :home home-page

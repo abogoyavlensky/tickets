@@ -1,14 +1,23 @@
 (ns tickets.components.server-info
   (:require [com.stuartsierra.component :as component]))
 
-(defrecord ServerInfoPrinter [http-port]
+
+(defrecord ServerInfoPrinter
+  [http-port]
+
   component/Lifecycle
-  (start [component]
+
+  (start
+    [component]
     (println "Started tickets on" (str "http://localhost:" http-port))
     component)
-  (stop [component]
+
+
+  (stop
+    [component]
     component))
 
 
-(defn server-info [http-port]
+(defn server-info
+  [http-port]
   (->ServerInfoPrinter http-port))

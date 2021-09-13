@@ -38,13 +38,15 @@
 (s/def :ticket/description ::not-empty-string)
 (s/def :ticket/applicant ::not-empty-string)
 (s/def :ticket/executor ::not-empty-string)
+
+
 (s/def :ticket/completed-at
   (s/and
     string?
     valid-date?
     (s/conformer
-        instant/read-instant-date
-        date->string)))
+      instant/read-instant-date
+      date->string)))
 
 
 (s/def ::ticket-in

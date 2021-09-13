@@ -36,8 +36,8 @@
        :executor "User From-Staff 2"
        :completed-at #inst "2021-11-03"})
     (let [response (client/get utils/TEST-URL-API-TICKETS
-                     {:accept :json
-                      :as :json})]
+                               {:accept :json
+                                :as :json})]
       (is (= 200 (:status response)))
       (is (= #{{:title "First ticket"
                 :description "Second description for the ticket."
@@ -63,10 +63,10 @@
                 :executor "User From-Staff"
                 :completed-at "2021-09-22"}
         response (client/post utils/TEST-URL-API-TICKETS
-                   {:accept :json
-                    :content-type :json
-                    :as :json
-                    :body (json/generate-string params)})]
+                              {:accept :json
+                               :content-type :json
+                               :as :json
+                               :body (json/generate-string params)})]
     (testing "check that response fro creating ticket is correct"
       (is (= 200 (:status response)))
       (is (= params (dissoc (:body response) :id)))

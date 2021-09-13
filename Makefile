@@ -46,3 +46,15 @@ lint:
 lint-init:
 	@$(INFO) "Linting project's classpath..."
 	@clj-kondo --config .clj-kondo/config-ci.edn --parallel --dependencies --lint $(shell lein classpath)
+
+
+.PHONY: fmt-check  # Checking code formatting
+fmt-check:
+	@$(INFO) "Checking code formatting..."
+	@cljstyle check --report $(DIRS)
+
+
+.PHONY: fmt  # Fixing code formatting
+fmt:
+	@$(INFO) "Fixing code formatting..."
+	@cljstyle fix --report $(DIRS)

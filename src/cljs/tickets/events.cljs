@@ -1,16 +1,16 @@
 (ns tickets.events
   (:require [re-frame.core :as re-frame]
             [ajax.core :as ajax]
-            ; import http-fx to register events
+            ;; import http-fx to register events
             [day8.re-frame.http-fx]
             [tickets.db :as db]
             [tickets.router :as router]))
 
 
 (re-frame/reg-event-db
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+  :initialize-db
+  (fn [_ _]
+    db/default-db))
 
 
 (re-frame/reg-fx
@@ -52,10 +52,10 @@
 
 (re-frame/reg-event-fx
   :set-current-page
-  (fn  [{:keys [db]} [_ page]]
+  (fn [{:keys [db]} [_ page]]
     (let [state {:db (-> db
-                       (assoc :current-page page)
-                       (assoc :ticket-form-errors nil))}]
+                         (assoc :current-page page)
+                         (assoc :ticket-form-errors nil))}]
       (case page
         :home (assoc state :dispatch [:get-tickets])
         state))))
@@ -94,7 +94,7 @@
         (assoc :ticket-form-errors errors))))
 
 
-; Inspect app-db state
+;; Inspect app-db state
 (comment
   (require '[re-frame.db :as rf-db])
   (swap! rf-db/app-db assoc :name "Some name")

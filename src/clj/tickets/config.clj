@@ -8,7 +8,8 @@
             [tickets.middlewares :as tickets-middlewares]))
 
 
-(defn config []
+(defn config
+  []
   {:http-port  (Integer. (or (env :port) 8080))
    :db {:db-system "dev"
         :db-name "tickets"}

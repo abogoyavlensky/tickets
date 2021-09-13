@@ -20,6 +20,7 @@
                :param any?
                :field keyword?))))
 
+
 (defn- field-error
   [field message-tmpl]
   {:field (if (some? field) field :form)
@@ -63,10 +64,10 @@
 (defn explain-data->error-messages
   [explain-data]
   (->> explain-data
-      ::s/problems
-      (map problem->error-message)
-      (group-by :field)
-      (reduce-kv
-        (fn [m k v]
-          (assoc m k (mapv :message v)))
-        {})))
+       ::s/problems
+       (map problem->error-message)
+       (group-by :field)
+       (reduce-kv
+         (fn [m k v]
+           (assoc m k (mapv :message v)))
+         {})))

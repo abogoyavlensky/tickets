@@ -15,19 +15,22 @@
   ^boolean goog.DEBUG)
 
 
-(defn dev-setup []
+(defn dev-setup
+  []
   (when debug?
     (enable-console-print!)
     (println "dev mode")))
 
 
-(defn mount-root []
+(defn mount-root
+  []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
 
 
-(defn render []
+(defn render
+  []
   (pushy/start! router/history)
   (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
