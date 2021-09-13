@@ -38,22 +38,53 @@
    [:p.empty-title.h5 "There are no tickets yet."]
    [:p.empty-subtitle "Please create a new ticket."]])
 
+(defn- page
+  [number active?]
+  [:li.page-item
+   {:class (if active? ["active"] [])}
+   [:a {:href "#"} number]])
+
+
+(defn- pagination
+  [{current :current
+    next-page :next
+    prev-page :prev}]
+  [:ul.pagination
+   [:li.page-item
+    {:class (when (= 0 prev-page)
+              ["disabled"])}
+    [:a {:href "#"} "Previous"]]
+   (when (> prev-page 0)
+     [:li.page-item
+      [:a {:href "#"} prev-page]])
+   [:li.page-item.active
+    [:a {:href "#"} current]]
+   (when next-page
+     [:li.page-item
+      [:a {:href "#"} next-page]])
+   [:li.page-item
+    {:class (when (nil? prev-page)
+              ["disabled"])}
+    [:a {:href "#"} "Next"]]])
+
 
 (defn- render-tickets-table
-  [tickets]
+  [tickets tickets-page]
   (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
     (if (seq tickets)
-      [:table
-       {:class ["table"]}
-       [:thead
-        [:tr
-         [:th "Title"]
-         [:th "Description"]
-         [:th "Applicant"]
-         [:th "Executor"]
-         [:th "Completion date"]]]
-       [:tbody
-        (map (partial render-ticket-item @ticket-new-id) tickets)]]
+      [:div
+       [:table
+        {:class ["table"]}
+        [:thead
+         [:tr
+          [:th "Title"]
+          [:th "Description"]
+          [:th "Applicant"]
+          [:th "Executor"]
+          [:th "Completion date"]]]
+        [:tbody
+         (map (partial render-ticket-item @ticket-new-id) tickets)]]
+       [pagination tickets-page]]
       [empty-tickets])))
 
 
@@ -61,6 +92,7 @@
   []
   (let [page-title (re-frame/subscribe [:page-title])
         tickets (re-frame/subscribe [:tickets])
+        tickets-page (re-frame/subscribe [:tickets-page])
         error (re-frame/subscribe [:tickets-error])
         loading? (re-frame/subscribe [:tickets-loading?])]
     [:div
@@ -76,7 +108,7 @@
          [:p "Loading..."]
          (if (some? @error)
            [:p @error]
-           (render-tickets-table @tickets)))]]))
+           (render-tickets-table @tickets @tickets-page)))]]))
 
 (defn- error-hint
   [message]

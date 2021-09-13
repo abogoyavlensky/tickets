@@ -8,6 +8,7 @@
   (:import [java.time.format DateTimeFormatter DateTimeParseException]
            [java.time LocalDate]))
 
+(def ^:private PAGE-SIZE 2)
 
 (def ^:private date-format
   (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
@@ -83,8 +84,19 @@
 
 
 (defn tickets-list
-  [db]
-  (let [tickets (queries/get-ticket-list db)]
-    (->> tickets
-         (map #(s/unform ::ticket-out %))
+  [db request]
+  (let [page (or (Integer/parseInt (get-in request [:params :page])) 1)
+        offset (* (dec #p page) PAGE-SIZE)
+        limit (+ offset PAGE-SIZE 1)
+        tickets (queries/get-ticket-list db
+                  {:offset #p offset
+                   :limit #p limit})
+        has-next-page? (= limit (count tickets))
+        tickets* (if has-next-page?
+                   (pop tickets)
+                   tickets)]
+    (->> {:tickets (map #(s/unform ::ticket-out %) tickets*)
+          :next-page (when has-next-page?
+                       (inc page))
+          :prev-page (dec page)}
          (ring-util/json-response))))

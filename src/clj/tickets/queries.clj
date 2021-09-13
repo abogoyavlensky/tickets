@@ -60,7 +60,7 @@
 
 (defn get-ticket-list
   "Return list of tickets from db."
-  [db]
+  [db options]
   (let [query '[:find ?e ?title ?description ?applicant ?executor ?completed-at
                 :keys id title description applicant executor completed-at
                 :where [?e :ticket/title ?title]
@@ -69,4 +69,14 @@
                 [?e :ticket/executor ?executor]
                 [?e :ticket/completed-at ?completed-at]]]
     (async-db-query!
-      #(d/q {:query query :args [(d/db (:conn db))]}))))
+      #(d/q {:query query
+             :args [(d/db (:conn db))]
+             :limit (:limit options)
+             :offset (:offset options)}))))
+
+
+; TODO: remove!
+(comment
+  (require '[reloaded.repl :refer [system]])
+  (let [db (:db system)]
+    (get-ticket-list db {})))

@@ -27,6 +27,12 @@
 
 
 (re-frame/reg-sub
+  :tickets-page
+  (fn [db]
+    (:tickets-page db)))
+
+
+(re-frame/reg-sub
   :tickets-error
   (fn [db]
     (:tickets-error db)))

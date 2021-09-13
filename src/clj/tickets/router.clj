@@ -10,7 +10,7 @@
   [endpoint]
   (context "/tickets" []
     (routes
-      (GET "/" [] (handlers/tickets-list (:db endpoint)))
+      (GET "/" request (handlers/tickets-list (:db endpoint) request))
       (POST "/" request (handlers/tickets-create (:db endpoint) request)))))
 
 
