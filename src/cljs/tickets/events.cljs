@@ -95,3 +95,11 @@
     (-> db
         (assoc :ticket-form-submitting? false)
         (assoc :ticket-form-errors errors))))
+
+
+(re-frame/reg-event-fx
+  :event/set-tickets-page
+  (fn [{:keys [db]} [_ page]]
+    {:db (-> db
+             (assoc-in [:tickets-page :current] page))
+     :dispatch [:get-tickets]}))

@@ -79,4 +79,4 @@
 (comment
   (require '[reloaded.repl :refer [system]])
   (let [db (:db system)]
-    (get-ticket-list db {})))
+    (get-ticket-list db {:offset 0 :limit 2})))

@@ -53,19 +53,31 @@
    [:li.page-item
     {:class (when (= 0 prev-page)
               ["disabled"])}
-    [:a {:href "#"} "Previous"]]
+    [:a
+     {:href "#"
+      :on-click #(re-frame/dispatch [:event/set-tickets-page prev-page])}
+     "Previous"]]
    (when (> prev-page 0)
      [:li.page-item
-      [:a {:href "#"} prev-page]])
+      [:a
+       {:href "#"
+        :on-click #(re-frame/dispatch [:event/set-tickets-page prev-page])}
+       prev-page]])
    [:li.page-item.active
-    [:a {:href "#"} current]]
+    [:a current]]
    (when next-page
      [:li.page-item
-      [:a {:href "#"} next-page]])
+      [:a
+       {:href "#"
+        :on-click #(re-frame/dispatch [:event/set-tickets-page next-page])}
+       next-page]])
    [:li.page-item
-    {:class (when (nil? prev-page)
+    {:class (when (nil? next-page)
               ["disabled"])}
-    [:a {:href "#"} "Next"]]])
+    [:a
+     {:href "#"
+      :on-click #(re-frame/dispatch [:event/set-tickets-page next-page])}
+     "Next"]]])
 
 
 (defn- render-tickets-table

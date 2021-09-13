@@ -87,11 +87,11 @@
   [db request]
   (let [page (or (Integer/parseInt (get-in request [:params :page])) 1)
         offset (* (dec #p page) PAGE-SIZE)
-        limit (+ offset PAGE-SIZE 1)
+        limit (+ offset PAGE-SIZE)
         tickets (queries/get-ticket-list db
-                  {:offset #p offset
-                   :limit #p limit})
-        has-next-page? (= limit (count tickets))
+                  {:offset offset
+                   :limit limit})
+        has-next-page? (= (- limit offset) (count tickets))
         tickets* (if has-next-page?
                    (pop tickets)
                    tickets)]
