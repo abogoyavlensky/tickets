@@ -28,6 +28,7 @@
      :http-xhrio {:method :get
                   :uri (router/path-for-api :api-tickets-list)
                   :format (ajax/json-request-format)
+                  :params {:page (get-in db [:tickets-page :current])}
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:event/get-tickets-success]
                   :on-failure [:event/get-tickets-error]}}))
@@ -35,9 +36,11 @@
 
 (re-frame/reg-event-db
   :event/get-tickets-success
-  (fn [db [_ tickets]]
+  (fn [db [_ {:keys [tickets next-page prev-page]}]]
     (-> db
         (assoc :tickets tickets)
+        (assoc-in [:tickets-page :next] next-page)
+        (assoc-in [:tickets-page :prev] prev-page)
         (assoc :tickets-loading? false))))
 
 
@@ -92,6 +95,14 @@
     (-> db
         (assoc :ticket-form-submitting? false)
         (assoc :ticket-form-errors errors))))
+
+
+(re-frame/reg-event-fx
+  :event/set-tickets-page
+  (fn [{:keys [db]} [_ page]]
+    {:db (-> db
+             (assoc-in [:tickets-page :current] page))
+     :dispatch [:get-tickets]}))
 
 
 (re-frame/reg-event-db

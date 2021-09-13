@@ -40,8 +40,43 @@
    [:p.empty-subtitle "Please create a new ticket."]])
 
 
+(defn- pagination
+  [{current :current
+    next-page :next
+    prev-page :prev}]
+  [:ul.pagination
+   [:li.page-item
+    {:class (when (= 0 prev-page)
+              ["disabled"])}
+    [:a
+     {:href "#"
+      :on-click #(re-frame/dispatch [:event/set-tickets-page prev-page])}
+     "Previous"]]
+   (when (> prev-page 0)
+     [:li.page-item
+      [:a
+       {:href "#"
+        :on-click #(re-frame/dispatch [:event/set-tickets-page prev-page])}
+       prev-page]])
+   [:li.page-item.active
+    [:a current]]
+   (when next-page
+     [:li.page-item
+      [:a
+       {:href "#"
+        :on-click #(re-frame/dispatch [:event/set-tickets-page next-page])}
+       next-page]])
+   [:li.page-item
+    {:class (when (nil? next-page)
+              ["disabled"])}
+    [:a
+     {:href "#"
+      :on-click #(re-frame/dispatch [:event/set-tickets-page next-page])}
+     "Next"]]])
+
+
 (defn- render-tickets-table
-  [tickets]
+  [tickets tickets-page]
   (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
     (if (seq tickets)
       [:div
@@ -60,7 +95,8 @@
           [:th "Executor"]
           [:th "Completion date"]]]
         [:tbody
-         (map (partial render-ticket-item @ticket-new-id) tickets)]]]
+         (map (partial render-ticket-item @ticket-new-id) tickets)]]
+       [pagination tickets-page]]
       [empty-tickets])))
 
 
@@ -68,6 +104,7 @@
   []
   (let [page-title (re-frame/subscribe [:page-title])
         tickets (re-frame/subscribe [:tickets])
+        tickets-page (re-frame/subscribe [:tickets-page])
         error (re-frame/subscribe [:tickets-error])
         loading? (re-frame/subscribe [:tickets-loading?])]
     [:div
@@ -83,7 +120,7 @@
         [:p "Loading..."]
         (if (some? @error)
           [:p @error]
-          (render-tickets-table @tickets)))]]))
+          (render-tickets-table @tickets @tickets-page)))]]))
 
 
 (defn- error-hint

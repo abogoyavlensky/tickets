@@ -56,7 +56,7 @@
 
 (deftest test-api-create-ticket-ok
   (testing "check that there are no tickets in db"
-    (is (nil? (queries/get-ticket-list (:db utils/*test-system*)))))
+    (is (nil? (queries/get-ticket-list (:db utils/*test-system*) {}))))
   (let [params {:title "New ticket"
                 :description "Some description for the ticket."
                 :applicant "User Name"
@@ -72,7 +72,7 @@
       (is (= params (dissoc (:body response) :id)))
       (is (integer? (get-in response [:body :id]))))
     (testing "check ticket has been created in db"
-      (let [ticket-from-db (first (queries/get-ticket-list (:db utils/*test-system*)))]
+      (let [ticket-from-db (first (queries/get-ticket-list (:db utils/*test-system*) {}))]
         (is (= (update ticket-from-db :completed-at #'handlers/date->string)
                (:body response)))))))
 

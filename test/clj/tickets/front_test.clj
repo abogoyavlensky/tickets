@@ -32,7 +32,7 @@
       (is (etaoin/visible? driver {:tag :td
                                    :fn/text "New ticket"}))))
   (testing "check ticket has been created in db"
-    (let [ticket-from-db (first (queries/get-ticket-list (:db utils/*test-system*)))]
+    (let [ticket-from-db (first (queries/get-ticket-list (:db utils/*test-system*) {}))]
       (is (= {:applicant "User Name"
               :completed-at #inst "2021-09-15"
               :description "Some description of a ticket."
