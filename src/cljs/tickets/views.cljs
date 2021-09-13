@@ -44,17 +44,23 @@
   [tickets]
   (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
     (if (seq tickets)
-      [:table
-       {:class ["table"]}
-       [:thead
-        [:tr
-         [:th "Title"]
-         [:th "Description"]
-         [:th "Applicant"]
-         [:th "Executor"]
-         [:th "Completion date"]]]
-       [:tbody
-        (map (partial render-ticket-item @ticket-new-id) tickets)]]
+      [:div
+       (when (some? @ticket-new-id)
+         [:div.toast.toast-success
+          [:button.btn.btn-clear.float-right
+           {:on-click #(re-frame/dispatch [:event/clear-ticket-new-id])}]
+          [:p "New ticket has been created successfully!"]])
+       [:table
+        {:class ["table"]}
+        [:thead
+         [:tr
+          [:th "Title"]
+          [:th "Description"]
+          [:th "Applicant"]
+          [:th "Executor"]
+          [:th "Completion date"]]]
+        [:tbody
+         (map (partial render-ticket-item @ticket-new-id) tickets)]]]
       [empty-tickets])))
 
 

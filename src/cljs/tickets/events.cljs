@@ -93,6 +93,12 @@
         (assoc :ticket-form-submitting? false)
         (assoc :ticket-form-errors errors))))
 
+(re-frame/reg-event-db
+  :event/clear-ticket-new-id
+  (fn [db [_ _]]
+    (-> db
+        (assoc :ticket-new-id nil))))
+
 
 ;; Inspect app-db state
 (comment
