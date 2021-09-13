@@ -5,27 +5,33 @@
             [tickets.events]
             [tickets.subs]
             [tickets.views :as views]
-            [tickets.config :as config]
             [tickets.router :as router]))
 
 
 (enable-console-print!)
 
 
-(defn dev-setup []
-  (when config/debug?
+(def debug?
+  ^boolean goog.DEBUG)
+
+
+(defn dev-setup
+  []
+  (when debug?
     (enable-console-print!)
     (println "dev mode")))
 
 
-(defn mount-root []
+(defn mount-root
+  []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
 
 
-(defn render []
+(defn render
+  []
   (pushy/start! router/history)
-  (re-frame/dispatch-sync [:initialize-db])
+  (re-frame/dispatch-sync [:event/initialize-db])
   (dev-setup)
   (mount-root))

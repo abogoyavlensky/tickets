@@ -1,26 +1,26 @@
 (ns tickets.events
   (:require [re-frame.core :as re-frame]
             [ajax.core :as ajax]
-            ; import http-fx to register events
+            ;; import http-fx to register events
             [day8.re-frame.http-fx]
             [tickets.db :as db]
             [tickets.router :as router]))
 
 
 (re-frame/reg-event-db
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+  :event/initialize-db
+  (fn [_ _]
+    db/default-db))
 
 
 (re-frame/reg-fx
-  :set-url
+  :fx/set-url
   (fn [{:keys [url]}]
     (router/set-token! url)))
 
 
 (re-frame/reg-event-fx
-  :get-tickets
+  :event/get-tickets
   (fn [{:keys [db]} _]
     {:db (-> db
              (assoc :tickets-loading? true)
@@ -30,13 +30,13 @@
                   :format (ajax/json-request-format)
                   :params {:page (get-in db [:tickets-page :current])}
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:get-tickets-success]
-                  :on-failure [:get-tickets-error]}}))
+                  :on-success [:event/get-tickets-success]
+                  :on-failure [:event/get-tickets-error]}}))
 
 
 (re-frame/reg-event-db
-  :get-tickets-success
-  (fn [db [_ {:keys [tickets next-page prev-page] :as resp}]]
+  :event/get-tickets-success
+  (fn [db [_ {:keys [tickets next-page prev-page]}]]
     (-> db
         (assoc :tickets tickets)
         (assoc-in [:tickets-page :next] next-page)
@@ -45,7 +45,7 @@
 
 
 (re-frame/reg-event-db
-  :get-tickets-error
+  :event/get-tickets-error
   (fn [db [_ _]]
     (-> db
         (assoc :tickets-error (str "Error happened while fetching tickets. "
@@ -54,13 +54,13 @@
 
 
 (re-frame/reg-event-fx
-  :set-current-page
-  (fn  [{:keys [db]} [_ page]]
+  :event/set-current-page
+  (fn [{:keys [db]} [_ page]]
     (let [state {:db (-> db
-                       (assoc :current-page page)
-                       (assoc :ticket-form-errors nil))}]
+                         (assoc :current-page page)
+                         (assoc :ticket-form-errors nil))}]
       (case page
-        :home (assoc state :dispatch [:get-tickets])
+        :home (assoc state :dispatch [:event/get-tickets])
         state))))
 
 
@@ -86,7 +86,7 @@
              (assoc :ticket-form-submitting? false)
              (assoc :ticket-form-errors nil)
              (assoc :ticket-new-id (:id response)))
-     :set-url {:url (router/path-for :home)}}))
+     :fx/set-url {:url (router/path-for :home)}}))
 
 
 (re-frame/reg-event-db
@@ -103,3 +103,17 @@
     {:db (-> db
              (assoc-in [:tickets-page :current] page))
      :dispatch [:get-tickets]}))
+
+
+(re-frame/reg-event-db
+  :event/clear-ticket-new-id
+  (fn [db [_ _]]
+    (-> db
+        (assoc :ticket-new-id nil))))
+
+
+;; Inspect app-db state
+(comment
+  (require '[re-frame.db :as rf-db])
+  (swap! rf-db/app-db assoc :name "Some name")
+  (deref rf-db/app-db))

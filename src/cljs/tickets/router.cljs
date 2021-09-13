@@ -9,8 +9,8 @@
                "/create-ticket" :create-ticket}])
 
 
-; Duplicates api routes cause compojure does not support cljs.
-; Note: We could use bidi or reitit to get backend routes directly.
+;; Duplicates api routes cause compojure does not support cljs.
+;; Note: We could use bidi or reitit to get backend routes directly.
 (def api-routes
   ["/api/"
    [["tickets" :api-tickets-list]]])
@@ -18,7 +18,7 @@
 
 (def history
   (pushy/pushy
-    #(re-frame/dispatch [:set-current-page (:handler %)])
+    #(re-frame/dispatch [:event/set-current-page (:handler %)])
     #(bidi/match-route routes %)))
 
 

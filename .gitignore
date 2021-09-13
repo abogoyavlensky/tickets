@@ -1,5 +1,4 @@
 *.class
-*.jar
 /.lein-*
 /.nrepl-port
 /.repl
@@ -20,4 +19,4 @@ pom.xml.asc
 lsp/
 *.iml
 .DS_Store
-
+.clj-kondo/.cache

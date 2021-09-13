@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [tickets.router :as router]))
 
+
 (defn- header
   []
   [:h1 "Tickets"])
@@ -37,12 +38,6 @@
   [:div.empty
    [:p.empty-title.h5 "There are no tickets yet."]
    [:p.empty-subtitle "Please create a new ticket."]])
-
-(defn- page
-  [number active?]
-  [:li.page-item
-   {:class (if active? ["active"] [])}
-   [:a {:href "#"} number]])
 
 
 (defn- pagination
@@ -85,6 +80,11 @@
   (let [ticket-new-id (re-frame/subscribe [:ticket-new-id])]
     (if (seq tickets)
       [:div
+       (when (some? @ticket-new-id)
+         [:div.toast.toast-success
+          [:button.btn.btn-clear.float-right
+           {:on-click #(re-frame/dispatch [:event/clear-ticket-new-id])}]
+          [:p "New ticket has been created successfully!"]])
        [:table
         {:class ["table"]}
         [:thead
@@ -117,10 +117,11 @@
       [create-ticket-btn]]
      [:div
       (if (true? @loading?)
-         [:p "Loading..."]
-         (if (some? @error)
-           [:p @error]
-           (render-tickets-table @tickets @tickets-page)))]]))
+        [:p "Loading..."]
+        (if (some? @error)
+          [:p @error]
+          (render-tickets-table @tickets @tickets-page)))]]))
+
 
 (defn- error-hint
   [message]
@@ -128,6 +129,7 @@
    {:class ["form-input-hint"]
     :key message}
    message])
+
 
 (defn- input-field
   [{:keys [params field label field-type submitting? errors]}]
@@ -151,7 +153,6 @@
        :disabled (true? submitting?)
        :class ["form-input"]}]
      (map error-hint errors)]))
-
 
 
 (defn- textarea-field
@@ -256,7 +257,9 @@
      :class ["btn"]}
     "-> Home page"]])
 
-(defn main-panel []
+
+(defn main-panel
+  []
   (let [current-page (re-frame/subscribe [:current-page])
         content (case @current-page
                   :home home-page

@@ -8,7 +8,9 @@
   (:import [java.time.format DateTimeFormatter DateTimeParseException]
            [java.time LocalDate]))
 
+
 (def ^:private PAGE-SIZE 2)
+
 
 (def ^:private date-format
   (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
@@ -28,10 +30,10 @@
 
 
 (s/def ::not-empty-string
-  (fn [val]
+  (fn [value]
     (and
-      (string? val)
-      (boolean (seq (str/trim val))))))
+      (string? value)
+      (boolean (seq (str/trim value))))))
 
 
 (s/def :ticket/id integer?)
@@ -39,13 +41,15 @@
 (s/def :ticket/description ::not-empty-string)
 (s/def :ticket/applicant ::not-empty-string)
 (s/def :ticket/executor ::not-empty-string)
+
+
 (s/def :ticket/completed-at
   (s/and
     string?
     valid-date?
     (s/conformer
-        instant/read-instant-date
-        date->string)))
+      instant/read-instant-date
+      date->string)))
 
 
 (s/def ::ticket-in
@@ -89,8 +93,8 @@
         offset (* (dec #p page) PAGE-SIZE)
         limit (+ offset PAGE-SIZE)
         tickets (queries/get-ticket-list db
-                  {:offset offset
-                   :limit limit})
+                                         {:offset offset
+                                          :limit limit})
         has-next-page? (= (- limit offset) (count tickets))
         tickets* (if has-next-page?
                    (pop tickets)
