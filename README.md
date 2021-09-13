@@ -22,6 +22,8 @@ lein repl
 (go)
 ```
 
+Manage project locally:
+
 ```bash
 make test  # run tests for api and front
 make lint  # lint project's files
@@ -34,9 +36,9 @@ make run  # run uberjar
 ```
 
 ## TODO
-[] Add pagination.
-[] Add logs with logback.
-[] Run tests in CI.
-[] Validate form on the client side before sending to server. 
-[] Validate length of text fields in form.
-[] Add ticket name to notification about newly created ticket.
+- [ ] Add pagination.
+- [ ] Add logs with logback.
+- [ ] Run tests in CI.
+- [ ] Validate form on the client side before sending to server. 
+- [ ] Validate length of text fields in form.
+- [ ] Add ticket name to notification about newly created ticket.
