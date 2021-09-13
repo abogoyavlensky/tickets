@@ -2,8 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [clojure.core.async :as async]
             [datomic.client.api.async :as d]
-            [datomic.dev-local :as dev-local]
-            [slingshot.slingshot :refer [throw+]]))
+            [datomic.dev-local :as dev-local]))
 
 
 (def ^:private db-config
@@ -35,9 +34,13 @@
     :db/doc "The date of ticket completion"}])
 
 
-(defrecord DB [db-system db-name]
+(defrecord DB
+  [db-system db-name]
+
   component/Lifecycle
-  (start [component]
+
+  (start
+    [component]
     (println "Running db connection...")
     (let [client (d/client {:server-type :dev-local
                             :system db-system
@@ -48,7 +51,10 @@
       (-> component
           (assoc :client client)
           (assoc :conn conn))))
-  (stop [component]
+
+
+  (stop
+    [component]
     (let [{:keys [client conn]} component]
       (when (every? some? [client conn])
         (dev-local/release-db {:system (:system db-config)
@@ -58,7 +64,7 @@
       (dissoc component :client :conn))))
 
 
-; Public
+;; Public
 
 (defn db-component
   [{:keys [db-system db-name]}]

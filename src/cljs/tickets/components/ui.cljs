@@ -2,13 +2,23 @@
   (:require [com.stuartsierra.component :as component]
             [tickets.core :refer [render]]))
 
-(defrecord UIComponent []
+
+(defrecord UIComponent
+  []
+
   component/Lifecycle
-  (start [component]
+
+  (start
+    [component]
     (render)
     component)
-  (stop [component]
+
+
+  (stop
+    [component]
     component))
 
-(defn new-ui-component []
+
+(defn new-ui-component
+  []
   (map->UIComponent {}))

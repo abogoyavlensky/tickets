@@ -20,4 +20,4 @@ pom.xml.asc
 lsp/
 *.iml
 .DS_Store
-
+.clj-kondo/.cache

@@ -16,7 +16,9 @@
 
 (def ^:dynamic *test-system* nil)
 
-(defn create-test-system []
+
+(defn create-test-system
+  []
   (let [config (-> (tickets-config/config)
                    (assoc :http-port TEST-PORT)
                    (assoc-in [:db :db-system] "test")
@@ -33,4 +35,4 @@
     (try
       (test-fn)
       (finally
-       (component/stop *test-system*)))))
+        (component/stop *test-system*)))))

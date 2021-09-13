@@ -1,0 +1,6 @@
+{:rules
+ {:vars {:enabled? false}
+  :namespaces {:enabled? false}
+  :indentation {:indents {with-chrome-headless [[:inner 0]]
+                          GET [[:inner 0]]
+                          context [[:inner 0]]}}}}

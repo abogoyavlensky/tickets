@@ -27,10 +27,10 @@
 
 
 (s/def ::not-empty-string
-  (fn [val]
+  (fn [value]
     (and
-      (string? val)
-      (boolean (seq (str/trim val))))))
+      (string? value)
+      (boolean (seq (str/trim value))))))
 
 
 (s/def :ticket/id integer?)
@@ -38,13 +38,15 @@
 (s/def :ticket/description ::not-empty-string)
 (s/def :ticket/applicant ::not-empty-string)
 (s/def :ticket/executor ::not-empty-string)
+
+
 (s/def :ticket/completed-at
   (s/and
     string?
     valid-date?
     (s/conformer
-        instant/read-instant-date
-        date->string)))
+      instant/read-instant-date
+      date->string)))
 
 
 (s/def ::ticket-in

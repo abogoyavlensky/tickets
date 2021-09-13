@@ -2,25 +2,38 @@
   (:require [com.stuartsierra.component :as component]
             [tickets.components.ui :refer [new-ui-component]]))
 
+
 (declare system)
 
-(defn new-system []
-  (component/system-map
-   :app-root (new-ui-component)))
 
-(defn init []
+(defn new-system
+  []
+  (component/system-map
+    :app-root (new-ui-component)))
+
+
+(defn init
+  []
   (set! system (new-system)))
 
-(defn start []
+
+(defn start
+  []
   (set! system (component/start system)))
 
-(defn stop []
+
+(defn stop
+  []
   (set! system (component/stop system)))
 
-(defn ^:export go []
+
+(defn ^:export go
+  []
   (init)
   (start))
 
-(defn reset []
+
+(defn reset
+  []
   (stop)
   (go))

@@ -1,6 +1,5 @@
 (ns tickets.config
   (:require [environ.core :refer [env]]
-            [slingshot.slingshot :refer [try+]]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.gzip :as gzip]
             [ring.middleware.logger :as logger]
@@ -9,7 +8,8 @@
             [tickets.middlewares :as tickets-middlewares]))
 
 
-(defn config []
+(defn config
+  []
   {:http-port  (Integer. (or (env :port) 8080))
    :db {:db-system "dev"
         :db-name "tickets"}
