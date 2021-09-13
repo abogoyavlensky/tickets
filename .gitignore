@@ -19,3 +19,5 @@ pom.xml.asc
 .idea
 lsp/
 *.iml
+.DS_Store
+

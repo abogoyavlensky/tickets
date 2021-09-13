@@ -20,6 +20,11 @@
     (context "/api" []
       (api-routes endpoint))
     (route/resources "/assets")
+    (GET "/favicon.ico" _
+      (-> "public/favicon.ico"
+          io/resource
+          io/input-stream
+          response))
     (GET "/*" _
       (-> "public/index.html"
           io/resource
